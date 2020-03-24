@@ -21,11 +21,13 @@ public class SkipList<T extends Comparable<? super T>> {
     static class Entry<E>{
         E element;
         Entry[] next;
+        int[] skipCount;
         Entry prev;
 
         public Entry(E x, int lev) {
             element = x;
             next = new Entry[lev];
+            skipCount = new int[lev];
             // add more code if needed
         }
 
@@ -48,6 +50,7 @@ public class SkipList<T extends Comparable<? super T>> {
     public void setNextTail(Entry head, Entry tail) {
         for (int i=0; i<head.height(); i++) {
             head.next[i] = tail;
+            head.skipCount[i] = 1;
         }
     }
 
@@ -68,13 +71,26 @@ public class SkipList<T extends Comparable<? super T>> {
         if (contains(x)) return false;
         // height
         int height = chooseHeight();
+        printPred(height);
         Entry entry = new Entry(x, height);
         for (int i=0 ; i < height ; i++) {
           entry.next[i] = pred[i].next[i];
           pred[i].next[i] = entry;
+          entry.skipCount[i] = pred[i].skipCount[i];
+        }
+        for (int j = height; j <= maxLevel; j++) {
+            pred[j].skipCount[j] += 1;
         }
         size++;
         return false;
+    }
+
+    public void printPred(int height) {
+        System.out.println("Pred");
+        for (int i=0; i < pred.length; i++) {
+            System.out.print(pred[i].getElement() + " ");
+        }
+        System.out.println();
     }
 
     public int chooseHeight() {
@@ -106,7 +122,8 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Return element at index n of list.  First element is at index 0.
     public T get(int n) {
-        return null;
+        return getLog(n);
+        // return null;
     }
 
     // O(n) algorithm for get(n)
@@ -117,7 +134,19 @@ public class SkipList<T extends Comparable<? super T>> {
     // Optional operation: Eligible for EC.
     // O(log n) expected time for get(n).
     public T getLog(int n) {
-        return null;
+        int k = n+1;
+        if ((k < 1) || (k > size)) {
+            return null;
+        }
+        Entry curr = head;
+        int pos = 0;
+        for (int i = maxLevel; i >= 0; i--) {
+            while (pos + curr.skipCount[i] <= k) {
+                pos = pos + curr.skipCount[i];
+                curr = curr.next[i];
+            }
+        }
+        return ((T)curr.getElement());
     }
 
     // Is the list empty?
@@ -156,7 +185,7 @@ public class SkipList<T extends Comparable<? super T>> {
             Entry p = head;
             System.out.print("Level " + i + ": ");
             while (p != null) {
-                System.out.print(p.getElement() + " -> ");
+                System.out.print(p.getElement() + " skipping:(" + p.skipCount[i] + ")" +" -> ");
                 p = p.next[i];
             }
             System.out.println();
@@ -220,6 +249,7 @@ public class SkipList<T extends Comparable<? super T>> {
                 case "Get": {
                     int intOperand = sc.nextInt();
                     returnValue = skipList.get(intOperand);
+                    System.out.println("Returned: " + returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
                     }
