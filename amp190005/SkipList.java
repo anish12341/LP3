@@ -22,11 +22,12 @@ public class SkipList<T extends Comparable<? super T>> {
         E element;
         Entry[] next;
         int[] skipCount;
-        Entry prev;
+        Entry[] prev;
 
         public Entry(E x, int lev) {
             element = x;
             next = new Entry[lev];
+            prev = new Entry[lev];
             skipCount = new int[lev];
             // add more code if needed
         }
@@ -51,6 +52,7 @@ public class SkipList<T extends Comparable<? super T>> {
         for (int i=0; i<head.height(); i++) {
             head.next[i] = tail;
             head.skipCount[i] = 1;
+            tail.prev[i] = head;
         }
     }
 
@@ -71,18 +73,48 @@ public class SkipList<T extends Comparable<? super T>> {
         if (contains(x)) return false;
         // height
         int height = chooseHeight();
-        printPred(height);
+        // printPred(height);
         Entry entry = new Entry(x, height);
         for (int i=0 ; i < height ; i++) {
           entry.next[i] = pred[i].next[i];
+          pred[i].next[i].prev[i] = entry;
           pred[i].next[i] = entry;
-          entry.skipCount[i] = pred[i].skipCount[i];
+          entry.prev[i] = pred[i];
+          if (i == 0) {
+              pred[i].skipCount[i] = entry.skipCount[i] = 1;
+          } else {
+              int prevAccm = 0;
+              Entry prevPred = pred[i-1];
+              while (prevPred != null && prevPred != pred[i]) {
+                //   System.out.print("Prev: " + prevPred.getElement() + " acc: " + prevAccm);
+                  prevAccm += prevPred.skipCount[i-1];
+                  prevPred = prevPred.prev[i-1];
+              }
+              if (prevPred != null) {
+                prevAccm += prevPred.skipCount[i-1];
+              }
+            //   System.out.print(" Final accm: " + prevAccm);
+            //   System.out.println();
+              int temp = pred[i].skipCount[i];
+              pred[i].skipCount[i] = prevAccm;
+              entry.skipCount[i] = temp - prevAccm + 1;
+          }
+
         }
         for (int j = height; j <= maxLevel; j++) {
             pred[j].skipCount[j] += 1;
         }
+        // printPrev(entry.prev);
         size++;
-        return false;
+        return true;
+    }
+
+    public void printPrev(Entry[] prevArr) {
+        System.out.println("PREV: ");
+        for (int i=0; i < prevArr.length; i++) {
+            System.out.print(prevArr[i].getElement() + " ");
+        }
+        System.out.println();
     }
 
     public void printPred(int height) {
@@ -177,8 +209,13 @@ public class SkipList<T extends Comparable<? super T>> {
     	Entry entry = pred[0].next[0];
     	int height = entry.height();
     	for(int i=0; i<height; i++) {
-    		pred[i].next[i] = entry.next[i];
-    	}
+            pred[i].next[i] = entry.next[i];
+            entry.next[i].prev[i] = pred[i];
+            pred[i].skipCount[i] = (pred[i].skipCount[i] + entry.skipCount[i] - 1);
+        }
+        for (int j = height; j <= maxLevel; j++) {
+            pred[j].skipCount[j] -= 1;
+        }
     	size--;
         return x;
     }
@@ -237,7 +274,7 @@ public class SkipList<T extends Comparable<? super T>> {
                     if(skipList.add(operand)) {
                         result = (result + 1) % modValue;
                     }
-                    skipList.printSkipList();
+                    // skipList.printSkipList();
                     break;
                 }
                 case "Ceiling": {
@@ -258,7 +295,7 @@ public class SkipList<T extends Comparable<? super T>> {
                 case "Get": {
                     int intOperand = sc.nextInt();
                     returnValue = skipList.get(intOperand);
-                    System.out.println("Returned: " + returnValue);
+                    // System.out.println("Returned: " + returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
                     }
@@ -283,20 +320,20 @@ public class SkipList<T extends Comparable<? super T>> {
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
-                        System.out.println("Removed Entry: "+operand);
+                        // System.out.println("Removed Entry: "+operand);
                     }
-                    else
-                    	System.out.println(operand+" is not present in the Skiplist");
-                    skipList.printSkipList();
+                    // else
+                    // 	System.out.println(operand+" is not present in the Skiplist");
+                    // skipList.printSkipList();
                     break;
                 }
                 case "Contains":{
                     operand = sc.nextLong();
                     if (skipList.contains(operand)) {
                         result = (result + 1) % modValue;
-                        System.out.println("Yes I am here");
+                        // System.out.println("Yes I am here");
                     } else {
-                        System.out.println("No I am not");
+                        // System.out.println("No I am not");
                     }
                     break;
                 }
