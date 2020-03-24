@@ -172,7 +172,15 @@ public class SkipList<T extends Comparable<? super T>> {
 
     // Remove x from list.  Removed element is returned. Return null if x not in list
     public T remove(T x) {
-        return null;
+    	if(!contains(x)) 
+    		return null;
+    	Entry entry = pred[0].next[0];
+    	int height = entry.height();
+    	for(int i=0; i<height; i++) {
+    		pred[i].next[i] = entry.next[i];
+    	}
+    	size--;
+        return x;
     }
 
     // Return the number of elements in the list
@@ -229,6 +237,7 @@ public class SkipList<T extends Comparable<? super T>> {
                     if(skipList.add(operand)) {
                         result = (result + 1) % modValue;
                     }
+                    skipList.printSkipList();
                     break;
                 }
                 case "Ceiling": {
@@ -274,7 +283,11 @@ public class SkipList<T extends Comparable<? super T>> {
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
+                        System.out.println("Removed Entry: "+operand);
                     }
+                    else
+                    	System.out.println(operand+" is not present in the Skiplist");
+                    skipList.printSkipList();
                     break;
                 }
                 case "Contains":{
