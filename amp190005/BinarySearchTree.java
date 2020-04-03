@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 package LP3.amp190005;
 
+=======
+package amp190005;
+
+import java.util.Comparator;
+>>>>>>> development
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
@@ -90,12 +96,20 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         }
         while(true) {
             if (x.compareTo(ent.element) < 0) {
+<<<<<<< HEAD
                 if (ent.left == null) { break; }
+=======
+                if (ent.left == null || ent.left.element == null) { break; }
+>>>>>>> development
                 parents.push(ent);
                 ent = ent.left;
             } else if (ent.element == x) {
                 break;
+<<<<<<< HEAD
             } else if (ent.right == null) {
+=======
+            } else if (ent.right == null || ent.right.element == null) {
+>>>>>>> development
                 break;
             } else {
                 parents.push(ent);
