@@ -20,16 +20,17 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         T element; // value of entry
         Entry<T> left, right; // left and right children of entry
 
+
+        public Entry(T x) {
+			this.element = x;
+        }
+
         /**
          * Constructor to create entry in BST
          * @param x The value of the new entry
          * @param left The left child of the new entry
          * @param right The right child of the new entry
          */
-        public Entry(T x) {
-			this.element = x;
-        }
-        
         public Entry(T x, Entry<T> left, Entry<T> right) {
             this.element = x;
             this.left = left;

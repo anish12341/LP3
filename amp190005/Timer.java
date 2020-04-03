@@ -1,4 +1,4 @@
-package amp190005;
+package LP3.amp190005;
 
 public class Timer {
     long startTime, endTime, elapsedTime, memAvailable, memUsed;

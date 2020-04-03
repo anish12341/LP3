@@ -1,4 +1,4 @@
-package amp190005;
+package LP3.amp190005;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,7 +65,7 @@ public class RedBlackTreeDriver {
 					break;
 				}
 
-				case "Validate":{
+				/*case "Validate":{
 					boolean valid = redBlackTree.verifyRBT();
 					if(!valid)
 						System.out.println("Invalid RBT");
@@ -73,7 +73,7 @@ public class RedBlackTreeDriver {
 						System.out.println("Valid RBT");
 					}
 					break;
-				}
+				}*/
 			}
 		}
 

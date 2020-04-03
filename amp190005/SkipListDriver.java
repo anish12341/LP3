@@ -1,7 +1,6 @@
-package amp190005;
+package LP3.amp190005;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
 import java.util.Scanner;
 
 //Driver program for skip list implementation.
