@@ -363,6 +363,61 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return t;
 	}
 
+	
+	public T remove(T x) {
+	    T removed = super.remove(x);
+	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
+	    
+		if(((Entry<T>) removed).color == RED)
+			return removed;
+		else {
+			fixUp(cursor);
+		}
+		
+		return removed;
+	}
+	
+	public void fixUp(Entry<T> cursor) {
+		Entry<T> sibling = null;
+		Entry<T> parent = (Entry<T>) parents.pop();
+		while (cursor != root && cursor.color == BLACK) {
+			 if (direction.equals("right"))
+				sibling = (Entry<T>) parent.left;
+		 	 else if (direction.equals("left"))
+		 		sibling = (Entry<T>) parent.right;
+			 if (direction.equals("left")) {
+				 
+				 // CASE 1
+				 if (sibling.color == RED) {
+					 sibling.setColor(BLACK);
+					 parent.setColor(RED);
+					 rotateLeft(parent);
+				 }
+				 
+				 // CASE 2
+				 else if (sibling.color == BLACK && ((Entry<T>) (sibling.right)).color == BLACK && (((Entry<T>) (sibling.left)).color == BLACK)) {
+					sibling.color = RED; 
+					cursor = parent; 
+				 }
+				 
+				 // CASE 3
+				 else if(((Entry<T>) (sibling.right)).color == BLACK) {
+					 ((Entry<T>) (sibling.left)).color = BLACK;
+					 sibling.color = RED;
+					 rotateRight(sibling);
+				 }
+			 }
+			 
+			 else {
+				 ((Entry<T>) (sibling.right)).color = BLACK;
+				 sibling.color = parent.color;
+				 parent.color = BLACK;
+				 rotateLeft(parent);
+				 cursor = (Entry<T>) root;
+			 }
+		}
+	}
+	
 	/**
 	 * Uses BSTRemove function to clear the value
 	 * This function re-balances the color of the tree.

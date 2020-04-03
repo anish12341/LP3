@@ -31,6 +31,10 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
          * @param left The left child of the new entry
          * @param right The right child of the new entry
          */
+        public Entry(T x) {
+			this.element = x;
+        }
+        
         public Entry(T x, Entry<T> left, Entry<T> right) {
             this.element = x;
             this.left = left;
@@ -40,6 +44,8 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
 
     Entry<T> root; // root of BST
     int size; // size of BST
+    Entry<T> splicedChild;
+    String direction;
     Stack<Entry<T>> parents = new Stack(); // path from parent to current node
 
     /**
@@ -92,11 +98,13 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         while(true) {
             if (x.compareTo(ent.element) < 0) {
                 if (ent.left == null || ent.left.element == null) { break; }
+                if (ent.left == null) { break; }
                 parents.push(ent);
                 ent = ent.left;
             } else if (ent.element == x) {
                 break;
             } else if (ent.right == null || ent.right.element == null) {
+            } else if (ent.right == null) {
                 break;
             } else {
                 parents.push(ent);
@@ -180,6 +188,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     private void splice(Entry<T> ent) {
         Entry<T> parent = parents.peek();
         Entry<T> child = ent.left == null ? ent.right : ent.left;
+        splicedChild = child;
         if (parent == null) {
             root = child;
         } else if (parent.left == ent) {
@@ -187,6 +196,24 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         } else {
             parent.right = child;
         }
+    }
+            direction = "left";
+        } else {
+            parent.right = child;
+            direction = "right";
+        }
+    }
+    
+    /**
+     * This method returns splicedChild of removed Entry (Node)
+     * @return Entry<T> splicedChild
+     */
+    public Entry<T> getsplicedChild() {
+    	return this.splicedChild;
+    }
+    
+    public String getDirection() {
+    	return this.direction;
     }
 
     /**
