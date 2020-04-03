@@ -1,6 +1,5 @@
-package amp190005;
+package LP3.amp190005;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
