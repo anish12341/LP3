@@ -15,7 +15,7 @@ public class RedBlackTreeDriver {
 		} else {
 			sc = new Scanner(System.in);
 		}*/
-		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\RBT\\src\\amp190005\\sk-t01.txt");
+		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\LP3Git\\src\\LP3\\amp190005\\sk-t01.txt");
 		sc = new Scanner(file);
 
 		String operation = "";
@@ -40,15 +40,15 @@ public class RedBlackTreeDriver {
 					*/
 					break;
 				}
-				case "Remove": {
+				/*case "Remove": {
 					operand = sc.nextLong();
 					System.out.println("Remove element:"+operand);
 					if (redBlackTree.remove(operand) != null) {
 						result = (result + 1) % modValue;
 					}
 					redBlackTree.printTree();
-					/*if(!redBlackTree.verifyRBT())
-						break;*/
+					*//*if(!redBlackTree.verifyRBT())
+						break;*//*
 					break;
 				}
 				case "Contains":{
@@ -63,9 +63,9 @@ public class RedBlackTreeDriver {
 					redBlackTree.printTree();
 					System.out.println("Result:"+ result);
 					break;
-				}
+				}*/
 
-				/*case "Validate":{
+				case "Validate":{
 					boolean valid = redBlackTree.verifyRBT();
 					if(!valid)
 						System.out.println("Invalid RBT");
@@ -73,7 +73,7 @@ public class RedBlackTreeDriver {
 						System.out.println("Valid RBT");
 					}
 					break;
-				}*/
+				}
 			}
 		}
 

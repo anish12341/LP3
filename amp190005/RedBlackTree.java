@@ -34,6 +34,14 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		boolean isBlack() {
 			return color == BLACK;
 		}
+		boolean isLeaf(){
+			if (left.element != null)
+				return false;
+			if (right.element != null)
+				return false;
+
+			return true;
+		}
 
 		void setColor(boolean color) {
 			this.color = color;
@@ -560,53 +568,59 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			return true;
 	}
 
-	// public boolean validateNodes(Entry<T> node){
+	 public boolean validateNodes(Entry<T> node){
 
-	// 	Entry<T> leftNode= (Entry<T>) node.left;
-	// 	Entry<T> rightNode = (Entry<T>) node.right;
+	 	Entry<T> leftNode= (Entry<T>) node.left;
+	 	Entry<T> rightNode = (Entry<T>) node.right;
 
-	// 	if (node.isLeaf() && node.color == RED) {
-	// 		// Leafs should not be red
-	// 		System.out.println("Leaf node is not red");
-	// 		return false;
-	// 	}
+	 	if (node.isLeaf() && leftNode.color == RED && leftNode.color == RED) {
+	 		// Leafs should not be red
+	 		System.out.println("NIL should not be red");
+	 		return false;
+	 	}
 
-	// 	if (node.color == RED) {
-	// 		// You should not have two red nodes in a row
+	 	if (node.color == RED) {
+	 		// You should not have two red nodes in a row
 
-	// 		if (leftNode.color == RED) {
-	// 			System.out.println("Adjacent red left nodes: "+ node.element + " and " + leftNode.element);
-	// 			return false;
-	// 		}
-	// 		if (rightNode.color == RED) {
-	// 			System.out.println("Adjacent red right nodes: "+ node.element + " and " + rightNode.element);
-	// 			return false;
-	// 		}
-	// 	}
+	 		if (leftNode.color == RED) {
+	 			System.out.println("Adjacent red left nodes: "+ node.element + " and " + leftNode.element);
+	 			return false;
+	 		}
+	 		if (rightNode.color == RED) {
+	 			System.out.println("Adjacent red right nodes: "+ node.element + " and " + rightNode.element);
+	 			return false;
+	 		}
+	 	}
 
-	// 	if (leftNode != NIL && !leftNode.isLeaf()) {
-	// 		// Check BST property
-	// 		boolean leftCheck = leftNode.element.compareTo(node.element) <= 0;
-	// 		if (!leftCheck)
-	// 			return false;
-	// 		// Check red-black property
-	// 		leftCheck = this.validateNodes(leftNode);
-	// 		if (!leftCheck)
-	// 			return false;
-	// 	}
+	 	if (leftNode.element != null && !leftNode.isLeaf()) {
+	 		// Check BST property
+			System.out.println("Checking BST property for LEFT node");
+	 		boolean leftCheck = leftNode.element.compareTo(node.element) <= 0;
+	 		if (!leftCheck)
+	 			return false;
 
-	// 	if (rightNode != NIL  && !rightNode.isLeaf()) {
-	// 		// Check BST property
-	// 		boolean rightCheck = rightNode.element.compareTo(node.element) > 0;
-	// 		if (!rightCheck)
-	// 			return false;
-	// 		// Check red-black property
-	// 		rightCheck = this.validateNodes(rightNode);
-	// 		if (!rightCheck)
-	// 			return false;
-	// 	}
-	// 	return true;
-	// }
+	 		// Check red-black property
+			System.out.println("Checking RBT property for LEFT node");
+	 		leftCheck = this.validateNodes(leftNode);
+	 		if (!leftCheck)
+	 			return false;
+	 	}
+
+	 	if (rightNode.element != null  && !rightNode.isLeaf()) {
+	 		// Check BST property
+			System.out.println("Checking BST property for RIGHT node");
+	 		boolean rightCheck = rightNode.element.compareTo(node.element) > 0;
+	 		if (!rightCheck)
+	 			return false;
+	 		// Check red-black property
+
+	 		rightCheck = this.validateNodes(rightNode);
+	 		if (!rightCheck)
+				System.out.println("Does not satisfy RBT property for RIGHT node");
+	 			return false;
+	 	}
+	 	return true;
+	 }
 
 
 	public int computeHeight(Entry<T> node){
@@ -630,22 +644,24 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return computeHeight(root) != -1;
 	}
 
-	// public boolean verifyRBT(){
-	// 	if(!isRootBlack()) {
-	// 		System.out.println("Root is not black");
-	// 		return false;
-	// 	}
-	// 	if(!validateNodes((Entry<T>) root)) {
-	// 		System.out.println("Not a valid RBT");
-	// 		return false;
-	// 	}
-	// 	if(!isBlackHeightValid((Entry<T>) root)){
-	// 		System.out.println("Invalid height");
-	// 		return false;
-	// 	}
-	// 	System.out.println("Valid RBT");
-	// 	return true;
-	// }
+	 public boolean verifyRBT(){
+	 	if(!isRootBlack()) {
+	 		System.out.println("Root is not black");
+	 		return false;
+	 	}
+	 	else if(!validateNodes((Entry<T>) root)) {
+	 		System.out.println("Not a valid RBT");
+	 		return false;
+	 	}
+	 	else if(!isBlackHeightValid((Entry<T>) root)){
+	 		System.out.println("Invalid height");
+	 		return false;
+	 	}
+	 	else {
+	 		System.out.println("Valid RBT");
+			return true;
+		}
+	 }
 
 	/**
 	 * Sample Input 10 85 15 70 20 60 30 50 65 80 90 40 5 55 -60 -15 -85 -70 -90 -20
