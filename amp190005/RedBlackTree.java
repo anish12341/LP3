@@ -4,6 +4,8 @@ package amp190005;
 
 import java.util.Scanner;
 
+import amp190005.BinarySearchTree.Entry;
+
 /**
  * 
  * @author vedant, vishal
@@ -54,33 +56,32 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 */
 	public boolean add(T x) {
 		boolean add = super.add(x);
-		Entry<T> curr = getCurrent(x);
+		// RedBlackTree.Entry<T> curr = new Entry(bstCurr.element, NIL, NIL);
 		if (add) {
-			
+			BinarySearchTree.Entry<T> curr = getCurrent(x);
 			// initializing root node
 			if (size == 1) {
-				curr.left = NIL;
-				curr.right = NIL;
-				curr.setColor(BLACK);
+				root = curr;
 			} else {
-				curr.setColor(RED);
-				Entry<T> parent = getParent(curr);
-				while (curr != ((Entry<T>)root) && parent != null && parent.color != BLACK) {
+				((Entry<T>)curr).setColor(RED);
+				Entry<T> parent = getParent(((Entry<T>)curr));
+				while (curr != ((Entry<T>)root) && parent != null && parent.color != BLACK && ((Entry<T>)curr).color != BLACK) {
 					if (isLeftChild(parent, null)) {
-						Entry<T> uncle = getUncle(curr, parent);
-						if (uncle != null && uncle.color == RED) {
+						Entry<T> uncle = getUncle(((Entry<T>)curr), parent);
+						if (uncle.element != null && uncle.color == RED) {
 							parent.setColor(BLACK);
 							uncle.setColor(BLACK);
 							curr = getParent(parent);
 							if (curr != null) {
-								curr.setColor(RED);
-								parent = getParent(curr);
+								((Entry<T>)curr).setColor(RED);
+								parent = getParent(((Entry<T>)curr));
 							}
 						} else {
-							if (isRightChild(curr, parent)) {
+							if (isRightChild(((Entry<T>)curr), parent)) {
+								rotateLeft((Entry<T>)parent);
+								Entry<T> temp = (Entry<T>)curr;
 								curr = parent;
-								parent = getParent(curr);
-								rotateLeft(curr);
+								parent = temp;
 							}
 							if (parent != null) {
 								parent.setColor(BLACK);
@@ -90,37 +91,38 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 									rotateRight(grandParent);
 								}
 								curr = parent;
-								parent = getParent(curr);
+								parent = getParent(((Entry<T>)curr));
 							}
 						}
 					} else {
-						Entry<T> uncle = getUncle(curr, parent);
-						if (uncle != null && uncle.color == RED) {
+						Entry<T> uncle = getUncle(((Entry<T>)curr), parent);
+						if (uncle.element != null && uncle.color == RED) {
 							parent.setColor(BLACK);
 							uncle.setColor(BLACK);
 							curr = getParent(parent);
 							if (curr != null) {
-								curr.setColor(RED);
-								parent = getParent(curr);
+								((Entry<T>)curr).setColor(RED);
+								parent = getParent(((Entry<T>)curr));
 							}
 						} else {
-							if (isLeftChild(curr, parent)) {
+							if (isLeftChild(((Entry<T>)curr), parent)) {
+								rotateRight((Entry<T>)parent);
+								Entry<T> temp = (Entry<T>)curr;
 								curr = parent;
-								parent = getParent(curr);
-								rotateRight(curr);
+								parent = temp;
 							}
 							if (parent != null) {
 								parent.setColor(BLACK);
 								Entry<T> grandParent = getParent(parent);
+
 								if (grandParent != null) {
 									grandParent.setColor(RED);
 									rotateLeft(grandParent);
 								}
 								curr = parent;
-								parent = getParent(curr);
+								parent = getParent(((Entry<T>)curr));
 							}
 						}
-					
 					}
 				}
 				((Entry<T>)root).setColor(BLACK);
@@ -198,17 +200,40 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 * Method to get recently added element
 	 * @param x Recently added element
 	 */
-	public Entry<T> getCurrent(T x) {
-		Entry<T> parent = ((Entry<T>)parents.peek());
-		if (parent != null) {
-			if (parent.left != null && parent.left.element == x) {
-				return (Entry<T>)parent.left;
-			} else if (parent.right != null && parent.right.element == x) {
-				return (Entry<T>)parent.right;
+	public RedBlackTree.Entry<T> getCurrent(T x) {
+		if (parents.size() > 0) {
+			Entry<T> parent = ((Entry<T>)parents.peek());
+			convertToRBT(parent);
+			if (parent != null) {
+				if (parent.left != null && parent.left.element == x) {
+					return (Entry<T>)parent.left;
+				} else if (parent.right != null && parent.right.element == x) {
+					return (Entry<T>)parent.right;
+				}
 			}
 		}
-		return (Entry<T>)root;
+		// return (RedBlackTree.Entry<T>)root;
+		RedBlackTree.Entry<T> newRoot = new Entry<T>(x, NIL, NIL);
+		newRoot.setColor(BLACK);
+		return newRoot;
 	}
+
+	/**
+	 * Convert BST.Entry to RBT.Entry
+	 * @param curr Object of BST.entry
+	 * @return Object of RBT.Entry
+	 */
+	public void convertToRBT(BinarySearchTree.Entry<T> curr) {
+		if (curr.left != null) {
+			BinarySearchTree.Entry<T> temp = curr.left;
+			curr.left = new RedBlackTree.Entry<T>(temp.element, NIL, NIL);
+		} 
+		if (curr.right != null) {
+			BinarySearchTree.Entry<T> temp = curr.right;
+			curr.right = new RedBlackTree.Entry<T>(temp.element, NIL, NIL);
+		}
+	}
+
 	/**
 	 * setting up the color of new node
 	 * A Stack z is used to trace the path of the new node. All parents will be present.
@@ -279,6 +304,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		Entry<T> temp = (Entry<T>) parentNode.right; // temp = p address
 		parentNode.right = temp.left;
 		temp.left = parentNode;
+		// System.out.println("Result of left rotation" + temp.left.element + " " + parents.peek().element);
 		if (parents.peek() != null && parents.peek().left == parentNode) {
 			parents.peek().left = temp;
 		} else if (parents.peek() != null && parents.peek().right == parentNode) {
@@ -519,6 +545,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// In order traversal of RBTree
 	public void printTree(Entry<T> node) {
 		if (node.element != null) {
+			// System.out.print("Type: " + node.getClass() + " ");
 			printTree((Entry<T>) node.left);
 			String s = node.color == BLACK ? (String) "B" : "R";
 			System.out.print(" " + node.element + "" + s);
