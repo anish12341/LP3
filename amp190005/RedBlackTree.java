@@ -5,7 +5,7 @@ package LP3.amp190005;
 import java.util.Scanner;
 
 /**
- * 
+ *
  * @author vedant, vishal
  *
  * @param <T> Generic Type - can refer any Object
@@ -16,7 +16,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 	static class Entry<T> extends BinarySearchTree.Entry<T> {
 		boolean color;
-		
+
 		// default color always inserted as RED
 		Entry(T x, Entry<T> left, Entry<T> right) {
 			super(x, left, right);
@@ -154,7 +154,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 				return true;
 			}
 			return false;
-		}	
+		}
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		if (curr.left != null) {
 			BinarySearchTree.Entry<T> temp = curr.left;
 			curr.left = new RedBlackTree.Entry<T>(temp.element, NIL, NIL);
-		} 
+		}
 		if (curr.right != null) {
 			BinarySearchTree.Entry<T> temp = curr.right;
 			curr.right = new RedBlackTree.Entry<T>(temp.element, NIL, NIL);
@@ -254,13 +254,13 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 	// 	// violation of property no two adjacent red nodes
 	// 	if (x != root && x.color == RED && parent.color == RED && grandparent != null) {
-			
+
 	// 		// finding uncle
 	// 		if (grandparent.left == parent)
 	// 			uncle = (Entry<T>) grandparent.right;
 	// 		else
 	// 			uncle = (Entry<T>) grandparent.left;
-			
+
 	// 		// requires only re-coloring and propagating to grandparent
 	// 		if (uncle != null && uncle.color == RED) {
 	// 			parent.color = BLACK;
@@ -268,7 +268,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 			grandparent.color = RED;
 	// 			insertFixViolation(grandparent);
 	// 		}
-			
+
 	// 		// requires rotation and re-coloring
 	// 		else {
 	// 			if (grandparent.left == parent && parent.left == x) { // left left case
@@ -288,7 +288,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 			} else if (grandparent.right == parent && parent.right == x) { // right right case
 	// 				rotateLeft(grandparent);
 	// 			}
-				
+
 	// 			// swap parent color and grand parent color
 	// 			boolean temp = grandparent.color;
 	// 			grandparent.color = parent.color;
@@ -304,7 +304,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 * 		 \		=> 	   /
 	 * 		  \    		  /
 	 * 		   x		 p
-	 * @param parentNode - p as in above fig 
+	 * @param parentNode - p as in above fig
 	 */
 	private void rotateLeft(Entry<T> parentNode) {
 		Entry<T> temp = (Entry<T>) parentNode.right; // temp = p address
@@ -363,61 +363,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return t;
 	}
 
-	
-	public T remove(T x) {
-	    T removed = super.remove(x);
-	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
-	    
-		if(((Entry<T>) removed).color == RED)
-			return removed;
-		else {
-			fixUp(cursor);
-		}
-		
-		return removed;
-	}
-	
-	public void fixUp(Entry<T> cursor) {
-		Entry<T> sibling = null;
-		Entry<T> parent = (Entry<T>) parents.pop();
-		while (cursor != root && cursor.color == BLACK) {
-			 if (direction.equals("right"))
-				sibling = (Entry<T>) parent.left;
-		 	 else if (direction.equals("left"))
-		 		sibling = (Entry<T>) parent.right;
-			 if (direction.equals("left")) {
-				 
-				 // CASE 1
-				 if (sibling.color == RED) {
-					 sibling.setColor(BLACK);
-					 parent.setColor(RED);
-					 rotateLeft(parent);
-				 }
-				 
-				 // CASE 2
-				 else if (sibling.color == BLACK && ((Entry<T>) (sibling.right)).color == BLACK && (((Entry<T>) (sibling.left)).color == BLACK)) {
-					sibling.color = RED; 
-					cursor = parent; 
-				 }
-				 
-				 // CASE 3
-				 else if(((Entry<T>) (sibling.right)).color == BLACK) {
-					 ((Entry<T>) (sibling.left)).color = BLACK;
-					 sibling.color = RED;
-					 rotateRight(sibling);
-				 }
-			 }
-			 
-			 else {
-				 ((Entry<T>) (sibling.right)).color = BLACK;
-				 sibling.color = parent.color;
-				 parent.color = BLACK;
-				 rotateLeft(parent);
-				 cursor = (Entry<T>) root;
-			 }
-		}
-	}
-	
 	/**
 	 * Uses BSTRemove function to clear the value
 	 * This function re-balances the color of the tree.
@@ -436,7 +381,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 		deleteFixViolation();
 	// 		return remove;
 	// 	}
-		
+
 	// 	// non leaf node i.e. replaced by a child which is non leaf
 	// 	else if(!isLeafNode && deletedNodeColor==BLACK){
 	// 		if(direction.equals("right")) {
@@ -452,13 +397,13 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// }
 
 	/**
-	 * This method recursively fixes the violation of RBTree properties 
+	 * This method recursively fixes the violation of RBTree properties
 	 * after a node is deleted
 	 */
 	// private void deleteFixViolation() {
 	// 	Entry<T> sibling = null;
 	// 	Entry<T> parent = (Entry<T>) z.pop();
-		
+
 	// 	// find sibling
 	// 	if (direction.equals("right"))
 	// 		sibling = (Entry<T>) parent.left;
@@ -467,8 +412,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 	// 	// sibling exists & it's color is black
 	// 	if (sibling != null && sibling.color == BLACK) {
-			
-	// 		// sibling's both child are null 
+
+	// 		// sibling's both child are null
 	// 		if (sibling.left == NIL && sibling.right == NIL) {
 	// 			sibling.color = RED;
 	// 			if (parent.color == RED) {
@@ -482,8 +427,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 				direction = "right";
 	// 				deleteFixViolation();
 	// 			}
-	// 		} 
-			
+	// 		}
+
 	// 		// sibling's both child are RED
 	// 		else if (sibling.right != null && ((Entry<T>) (sibling.right)).color == RED && sibling.left != null
 	// 				&& ((Entry<T>) (sibling.left)).color == RED) {
@@ -502,8 +447,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 				((Entry<T>) (sibling.right)).color = BLACK;
 	// 				return;
 	// 			}
-	// 		} 
-			
+	// 		}
+
 	// 		// sibling's right child is RED
 	// 		else if (sibling.right != null && ((Entry<T>) (sibling.right)).color == RED) {
 	// 			if (direction.equals("right")) { // left right case
@@ -528,8 +473,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 				((Entry<T>) (sibling.right)).color = BLACK;
 	// 				return;
 	// 			}
-	// 		} 
-			
+	// 		}
+
 	// 		// sibling's left child is RED
 	// 		else if (sibling.left != null && ((Entry<T>) (sibling.left)).color == RED) {
 	// 			if (direction.equals("right")) {
@@ -555,8 +500,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 					deleteFixViolation();
 	// 				}
 	// 			}
-	// 		} 
-			
+	// 		}
+
 	// 		// all remaining cases mostly when sibling and both its child are BLACK
 	// 		else {
 	// 			sibling.color = RED;
@@ -572,17 +517,17 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	// 				deleteFixViolation();
 	// 			}
 	// 		}
-	// 	} 
-		
+	// 	}
+
 	// 	// sibling is RED in color, color of child doesn't matter
 	// 	else if (sibling != null && sibling.color == RED) {
-			
+
 	// 		if (direction.equals("right")) {
 	// 			rotateRight(parent);
 	// 		} else if (direction.equals("left")) {
 	// 			rotateLeft(parent);
 	// 		}
-			
+
 	// 		// swap parent color and sibling color
 	// 		boolean temp = parent.color;
 	// 		parent.color = sibling.color;
