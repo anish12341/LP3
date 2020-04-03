@@ -91,12 +91,12 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         }
         while(true) {
             if (x.compareTo(ent.element) < 0) {
-                if (ent.left == null) { break; }
+                if (ent.left == null || ent.left.element == null) { break; }
                 parents.push(ent);
                 ent = ent.left;
             } else if (ent.element == x) {
                 break;
-            } else if (ent.right == null) {
+            } else if (ent.right == null || ent.right.element == null) {
                 break;
             } else {
                 parents.push(ent);
