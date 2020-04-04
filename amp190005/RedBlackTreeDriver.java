@@ -30,11 +30,11 @@ public class RedBlackTreeDriver {
 			switch (operation) {
 				case "Add": {
 					operand = sc.nextLong();
+//					System.out.println("Add: " + operand + " ");
 					if(redBlackTree.add(operand)) {
 						result = (result + 1) % modValue;
 					}
 
-					redBlackTree.printTree();
 					/*if(!redBlackTree.verifyRBT())
 						break;
 					*/
@@ -50,7 +50,7 @@ public class RedBlackTreeDriver {
 					*//*if(!redBlackTree.verifyRBT())
 						break;*//*
 					break;
-				}
+				}*/
 				case "Contains":{
 					operand = sc.nextLong();
 					if (redBlackTree.contains(operand)) {
@@ -60,10 +60,8 @@ public class RedBlackTreeDriver {
 					else{
 						System.out.println("Tree DOES'T CONTAIN " + operand);
 					}
-					redBlackTree.printTree();
-					System.out.println("Result:"+ result);
 					break;
-				}*/
+				}
 
 				case "Validate":{
 					boolean valid = redBlackTree.verifyRBT();
@@ -73,6 +71,14 @@ public class RedBlackTreeDriver {
 						System.out.println("Valid RBT");
 					}
 					break;
+				}
+
+				case "Graphical":{
+					redBlackTree.print((RedBlackTree.Entry<Long>) redBlackTree.root);
+				}
+
+				case "Normal" : {
+					redBlackTree.printTree();
 				}
 			}
 		}

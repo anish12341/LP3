@@ -57,7 +57,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      */
     public boolean contains(T x) {
         Entry<T> ent = find(x);
-        if (ent == null || ent.element != x) {
+        if (ent == null || x.compareTo(ent.element) != 0) {
             return false;
         }
         return true;
@@ -72,7 +72,8 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     private Entry<T> find(T x) {
         parents = new Stack();
         parents.push(null);
-        return findHelper(x, root);
+        Entry<T> result = findHelper(x, root);
+        return result;
     }
 
     /**
@@ -82,7 +83,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      * @return Entry<T> node of tree if element found, else return entry where failed
      */
     private Entry<T> findHelper(T x, Entry<T> ent) {
-        if (ent == null || ent.element == x) {
+        if (ent == null || x.compareTo(ent.element) == 0) {
             return ent;
         }
 
@@ -90,13 +91,14 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
             return ent;
         }
         while(true) {
-            if (x.compareTo(ent.element) < 0) {
+            if (x.compareTo(ent.element) == 0) {
+                break;
+            }
+            else if (x.compareTo(ent.element) < 0) {
                 if (ent.left == null || ent.left.element == null) { break; }
                 parents.push(ent);
                 ent = ent.left;
-            } else if (ent.element == x) {
-                break;
-            } else if (ent.right == null || ent.right.element == null) {
+            }else if (ent.right == null || ent.right.element == null) {
                 break;
             } else {
                 parents.push(ent);
@@ -114,9 +116,9 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      * @return T Element in tree that is equal to x is returned, null otherwise
      */
     public T get(T x) {
-        Entry<T> e = find(x);
-        if (e != null && e.element == x) {
-            return e.element;
+        Entry<T> ent = find(x);
+        if (ent != null && x.compareTo(ent.element) == 0) {
+            return ent.element;
         }
         return null;
     }
@@ -135,9 +137,11 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
             return true;
         }
         Entry<T> ent = find(x);
-        if (ent.element == x) { return false; }
+
+        if (x.compareTo(ent.element) == 0) {
+            return false; }
         parents.push(ent);
-        // printParents();
+
         if (x.compareTo(ent.element) < 0) {
             ent.left = new Entry(x, null, null);
         } else {
@@ -146,6 +150,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         size++;
         return true;
     }
+
 
     /**
      * This method removes the element(x) from the tree.
@@ -156,7 +161,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     public T remove(T x) {
         if (size == 0) { return null; }
         Entry<T> ent = find(x);
-        if (ent.element != x) { return null; }
+        if (x.compareTo(ent.element) != 0) { return null; }
         if (ent.left == null || ent.right == null) {
             splice(ent);
             size--;
