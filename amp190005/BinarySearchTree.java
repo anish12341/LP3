@@ -43,7 +43,8 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     Entry<T> splicedChild;
     String direction;
     Stack<Entry<T>> parents = new Stack(); // path from parent to current node
-
+    Entry<T> splicedChild;
+    String direction;
     /**
      * Constructor for basic, empty BST
      */
@@ -59,7 +60,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      */
     public boolean contains(T x) {
         Entry<T> ent = find(x);
-        if (ent == null || ent.element != x) {
+        if (ent == null || x.compareTo(ent.element) != 0) {
             return false;
         }
         return true;
@@ -84,6 +85,8 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      * @return Entry<T> node of tree if element found, else return entry where failed
      */
     private Entry<T> findHelper(T x, Entry<T> ent) {
+    	System.out.println("X: " + x);
+    	System.out.println("ent: " + ent.element);
         if (ent == null || ent.element == x) {
             return ent;
         }
@@ -92,6 +95,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
             return ent;
         }
         while(true) {
+<<<<<<< Updated upstream
             if (x.compareTo(ent.element) < 0) {
                 if (ent.left == null) { break; }
                 parents.push(ent);
@@ -99,6 +103,15 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
             } else if (ent.element == x) {
                 break;
             } else if (ent.right == null) {
+=======
+        	if (ent.element== x) 
+                break;
+            else if (x.compareTo(ent.element) < 0) {
+                if (ent.left == null || ent.left.element == null) { break; }
+                parents.push(ent);
+                ent = ent.left;
+            } else if (ent.right == null || ent.right.element == null) {
+>>>>>>> Stashed changes
                 break;
             } else {
                 parents.push(ent);
@@ -116,9 +129,9 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      * @return T Element in tree that is equal to x is returned, null otherwise
      */
     public T get(T x) {
-        Entry<T> e = find(x);
-        if (e != null && e.element == x) {
-            return e.element;
+        Entry<T> ent = find(x);
+        if (ent != null && x.compareTo(ent.element) == 0) {
+            return ent.element;
         }
         return null;
     }
@@ -155,21 +168,27 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
      * @param x Element which is going to be removed
      * @return T element if found, else return null
      */
-    public T remove(T x) {
+    public Entry<T> remove(T x) {
         if (size == 0) { return null; }
         Entry<T> ent = find(x);
-        if (ent.element != x) { return null; }
-        if (ent.left == null || ent.right == null) {
+		
+		System.out.println("Ent in remove: "+ ent.element);
+        System.out.println("Ent.right: " + ent.right.element);
+	    System.out.println("Ent.left: " + ent.left.element);
+		 
+        if (x.compareTo(ent.element) != 0) { return null; }
+        
+        if (ent.left.element == null || ent.right.element == null) {
             splice(ent);
             size--;
-            return x;
+            return ent;
         } else {
             parents.push(ent);
             Entry<T> minRight = findHelper(x, ent.right);
             ent.element = minRight.element;
             splice(minRight);
             size--;
-            return x;
+            return ent;
         }
     }
 
@@ -185,7 +204,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         splicedChild = child;
         if (parent == null) {
             root = child;
-        } else if (parent.left == ent) {
+        } else if (parent.left == ent ) {
             parent.left = child;
             direction = "left";
         } else {
@@ -202,6 +221,13 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     	return this.splicedChild;
     }
     
+<<<<<<< Updated upstream
+=======
+    /**
+     * 
+     * @return
+     */
+>>>>>>> Stashed changes
     public String getDirection() {
     	return this.direction;
     }

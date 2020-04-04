@@ -357,22 +357,40 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return t;
 	}
 	
+<<<<<<< Updated upstream
 	public T remove(T x) {
 	    T removed = super.remove(x);
+=======
+	public Entry<T> remove(T x) {
+	    Entry<T> removed = (Entry<T>)super.remove(x);
+>>>>>>> Stashed changes
 	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
 	    
 		if(((Entry<T>) removed).color == RED)
 			return removed;
+<<<<<<< Updated upstream
 		else {
 			fixUp(cursor);
 		}
 		
+=======
+		else if(cursor != null){
+			fixUp(cursor);
+		}
+		else {
+			//do nothing
+		}
+>>>>>>> Stashed changes
 		return removed;
 	}
 	
 	public void fixUp(Entry<T> cursor) {
 		Entry<T> sibling = null;
 		Entry<T> parent = (Entry<T>) parents.pop();
+<<<<<<< Updated upstream
+=======
+		System.out.println("Cursor " + cursor.element);
+>>>>>>> Stashed changes
 		while (cursor != root && cursor.color == BLACK) {
 			 if (direction.equals("right"))
 				sibling = (Entry<T>) parent.left;
@@ -755,11 +773,12 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		while (in.hasNext()) {
 			int x = in.nextInt();
 			if (x > 0) {
-				System.out.print("Add " + x + " : ");
+				System.out.println("Add " + x + " : ");
 				t.add(x);
+				System.out.print("Root " + t.root.element + " : ");
 				t.printTree();
 			} else if (x < 0) {
-				System.out.print("Remove " + x + " : ");
+				System.out.print("Remove " + -x + " : ");
 				t.remove(-x);
 				t.printTree();
 			} else {
