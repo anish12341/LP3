@@ -777,8 +777,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			perpiece /= 2;
 		}
 	}
-
-
+	
 	/**
 	 * Sample Input 10 85 15 70 20 60 30 50 65 80 90 40 5 55 -60 -15 -85 -70 -90 -20
 	 *

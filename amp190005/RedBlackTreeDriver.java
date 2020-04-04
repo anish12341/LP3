@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 //Driver program for red black tree implementation.
-
 public class RedBlackTreeDriver {
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner sc;
