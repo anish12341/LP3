@@ -1,4 +1,4 @@
-package amp190005;
+package LP3.amp190005;
 
 import java.io.File;
 import java.io.FileNotFoundException;

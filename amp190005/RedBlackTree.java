@@ -1,10 +1,8 @@
-package amp190005;
+package LP3.amp190005;
 /** Starter code for Red-Black Tree
  */
 
 import java.util.Scanner;
-
-import amp190005.BinarySearchTree.Entry;
 
 /**
  * 
