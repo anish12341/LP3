@@ -46,12 +46,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		void setColor(boolean color) {
 			this.color = color;
 		}
-		
-		boolean isLeafNode(){
-			if(left.element == null && right.element == null)
-				return true;
-			return false;
-		}
 	}
 
 	Entry<T> NIL;
@@ -75,7 +69,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			if (size == 1) {
 				root = curr;
 			} else {
-				
 				((Entry<T>)curr).setColor(RED);
 				Entry<T> parent = getParent(((Entry<T>)curr));
 				while (curr != ((Entry<T>)root) && parent != null && parent.color != BLACK && ((Entry<T>)curr).color != BLACK) {
@@ -317,6 +310,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		Entry<T> temp = (Entry<T>) parentNode.right; // temp = p address
 		parentNode.right = temp.left;
 		temp.left = parentNode;
+		// System.out.println("Result of left rotation" + temp.left.element + " " + parents.peek().element);
 		if (parents.peek() != null && parents.peek().left == parentNode) {
 			parents.peek().left = temp;
 		} else if (parents.peek() != null && parents.peek().right == parentNode) {
@@ -368,110 +362,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		t = bstNodeToRBNode((Entry<T>) node.right);
 		return t;
 	}
-<<<<<<< HEAD
 
-=======
-	
-	public Entry<T> remove(T x) {
-	    Entry<T> removed = (Entry<T>)super.remove(x);
-	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
-	    if (removed.color == RED) 
-	    	return removed;
-	    if(removed.color == BLACK) 
-	    	fixUp(cursor);
-	    
-	    return removed;
-	 }
-	
-	public void fixUp(Entry<T> cursor) {
-		Entry<T> sibling = null;
-		Entry<T> siblingL = null;
-		Entry<T> siblingR = null;
-		Entry<T> parent = (Entry<T>) parents.peek();
-		if(cursor == root) {
-			System.out.println("Cursor is root ");
-			cursor.color = BLACK;
-			return;
-		}
-		while (cursor != root && cursor.color == BLACK) {
-			 
-			if(parent.left == cursor) {
-				sibling = (Entry<T>) parent.right;
-				if(sibling.left.element != null)
-					siblingL = (Entry<T>) sibling.left;
-				if(sibling.right.element != null)
-					siblingR = (Entry<T>) sibling.right;
-				
-				/*case 1*/
-				if(sibling.color == RED) {
-					sibling.color = BLACK;
-					parent.color = RED;
-					rotateLeft(parent);
-				}
-				
-				/*case 2*: both children of sibling is black*/
-				else if(siblingL != NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK) {
-					sibling.color = RED;
-					cursor = parent;
-				}
-				
-				else {
-					
-					/*case 3: right child of sibling is black*/
-					if(siblingR != NIL && siblingR.color == BLACK) {
-						siblingL.color = BLACK;
-						sibling.color = RED;
-						rotateRight(sibling);
-					}
-					
-					/*case 4: */
-					siblingR.color = BLACK;
-					sibling.color = parent.color;
-					parent.color = BLACK;
-					rotateLeft(parent);
-					cursor = (Entry<T>) root;
-				}
-			} 
-			
-			else { /*cursor is right child*/
-				sibling = (Entry<T>) parent.left;
-				siblingL = (Entry<T>) sibling.left;
-				siblingR = (Entry<T>) sibling.right;
-					
-				/*case 1*/
-				if(sibling.color == RED) {
-					sibling.color = BLACK;
-					parent.color = RED;
-					rotateRight(parent);
-				}
-				
-				/*case 2:  both children of sibling is black*/ 
-				else if(siblingL!= NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK){
-					sibling.color = RED;
-					cursor = parent;
-				}
-				
-				
-				else {
-					
-					/*case 3: left child of sibling is black*/
-					if(siblingL != NIL && siblingL.color == BLACK) {
-						siblingR.color = BLACK;
-						sibling.color = RED;
-						rotateLeft(sibling);
-					}
-					//case 4
-					siblingL.color = BLACK;
-					sibling.color = parent.color;
-					parent.color = BLACK;
-					rotateRight(parent);
-					cursor = (Entry<T>) root;
-				}
-			}
-		}
-	}
-	
->>>>>>> origin/Henil
 	/**
 	 * Uses BSTRemove function to clear the value
 	 * This function re-balances the color of the tree.
@@ -653,7 +544,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 */
 	public void printTree() {
 		System.out.print("[" + size + "]");
-		System.out.println("Root: " + root.element);
 		this.printTree((Entry<T>) root);
 		System.out.println();
 	}
@@ -891,7 +781,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 	/**
 	 * Sample Input 10 85 15 70 20 60 30 50 65 80 90 40 5 55 -60 -15 -85 -70 -90 -20
-	 * 
+	 *
 	 	10
 		Add 10 : [1] 10B
 		85
@@ -919,7 +809,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		5
 		Add 5 : [13] 5R 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
 		55
-		Add 55 : [14] 5R 10B 15B 20B 30B 40R 50B 55R 60R 65B 70B 80R 85B 90R 
+		Add 55 : [14] 5R 10B 15B 20B 30B 40R 50B 55R 60R 65B 70B 80R 85B 90R
 		-60
 		Remove -60 : [13] 5R 10B 15B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
 		-15
@@ -943,7 +833,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			int x = in.nextInt();
 			if (x > 0) {
 				System.out.println("Add " + x + " : ");
-<<<<<<< HEAD
 				tree.add(x);
 				System.out.println("Root " + tree.root.element + " : ");
 				tree.print((Entry<Integer>) tree.root);
@@ -951,17 +840,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 				System.out.print("Remove " + x + " : ");
 				tree.remove(-x);
 				tree.printTree();
-=======
-				t.add(x);
-				System.out.print("Root " + t.root.element + " : ");
-				
-				t.printTree();
-			} else if (x < 0) {
-				System.out.print("Remove " + -x + " : ");
-				t.remove(-x);
-				System.out.println("Direction: "+t.direction);
-				t.printTree();
->>>>>>> origin/Henil
 			} else {
 				Comparable[] arr = tree.toArray();
 				System.out.print("Final: ");
