@@ -195,7 +195,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     }
 
     /**
-     * This method returns minimum element of tree. 
+     * This method returns minimum element of tree.
      * It returns element if found, otherwise returns null (tree is empty).
      * @return T minimum element
      */
@@ -212,7 +212,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
     }
 
     /**
-     * This method returns maximum element of tree. 
+     * This method returns maximum element of tree.
      * It returns element if found, otherwise returns null (tree is empty).
      * @return T maximum element
      */
@@ -242,18 +242,18 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         Entry<T> current = root;
         int i = 0;
 
-        // traverse the tree 
-        while (current != null || s.size() > 0) 
+        // traverse the tree
+        while (current != null || s.size() > 0)
         {
-            while (current !=  null) 
-            { 
-                s.push(current); 
-                current = current.left; 
+            while (current !=  null)
+            {
+                s.push(current);
+                current = current.left;
             }
-            current = s.pop(); 
-            arr[i++] = current.element; 
-            current = current.right; 
-        } 
+            current = s.pop();
+            arr[i++] = current.element;
+            current = current.right;
+        }
         return arr;
     }
 
@@ -300,7 +300,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
         for (int i = 1; i < parents.size(); i++) {
             System.out.print(parents.get(i).element + " -");
         }
-        // if (parents.peek() != null) 
+        // if (parents.peek() != null)
         //     System.out.println("Top: " + parents.peek().element);
         System.out.println();
     }
