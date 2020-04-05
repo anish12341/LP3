@@ -69,7 +69,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			if (size == 1) {
 				root = curr;
 			} else {
-				
 				((Entry<T>)curr).setColor(RED);
 				Entry<T> parent = getParent(((Entry<T>)curr));
 				while (curr != ((Entry<T>)root) && parent != null && parent.color != BLACK && ((Entry<T>)curr).color != BLACK) {
@@ -461,7 +460,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			}
 		}
 	}
-	
+
 	/**
 	 * Uses BSTRemove function to clear the value
 	 * This function re-balances the color of the tree.
@@ -643,7 +642,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 */
 	public void printTree() {
 		System.out.print("[" + size + "]");
-		System.out.println("Root: " + root.element);
 		this.printTree((Entry<T>) root);
 		System.out.println();
 	}

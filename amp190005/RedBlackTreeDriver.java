@@ -66,12 +66,12 @@ public class RedBlackTreeDriver {
 				}
 
 				case "Validate":{
-//					boolean valid = redBlackTree.verifyRBT();
-//					if(!valid)
-//						System.out.println("Invalid RBT");
-//					else{
-//						System.out.println("Valid RBT");
-//					}
+					boolean valid = redBlackTree.verifyRBT();
+					if(!valid)
+						System.out.println("Invalid RBT");
+					else{
+						System.out.println("Valid RBT");
+					}
 					break;
 				}
 			}
