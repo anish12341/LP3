@@ -5,6 +5,7 @@ package amp190005;
 import java.util.Scanner;
 
 import amp190005.BinarySearchTree.Entry;
+import javafx.scene.Cursor;
 
 /**
  * 
@@ -364,11 +365,16 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	
 	public Entry<T> remove(T x) {
 	    Entry<T> removed = (Entry<T>)super.remove(x);
-	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
-	    if (removed.color == RED) 
-	    	return removed;
-	    if(removed.color == BLACK) 
-	    	fixUp(cursor);
+		Entry<T> cursor = (Entry<T>) super.getsplicedChild();
+		if (cursor == null) {
+			cursor = NIL;
+		}
+		if (removed != null) {
+			if (removed.color == RED) 
+				return removed;
+			if (removed.color == BLACK) 
+				fixUp(cursor);	
+		}
 	    
 	    return removed;
 	 }
@@ -377,7 +383,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		Entry<T> sibling = null;
 		Entry<T> siblingL = null;
 		Entry<T> siblingR = null;
-		Entry<T> parent = (Entry<T>) parents.peek();
+		Entry<T> parent = getParent(cursor);
 		if(cursor == root) {
 			System.out.println("Cursor is root ");
 			cursor.color = BLACK;
@@ -387,75 +393,84 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			 
 			if(parent.left == cursor) {
 				sibling = (Entry<T>) parent.right;
-				if(sibling.left.element != null)
-					siblingL = (Entry<T>) sibling.left;
-				if(sibling.right.element != null)
-					siblingR = (Entry<T>) sibling.right;
-				
-				/*case 1*/
-				if(sibling.color == RED) {
-					sibling.color = BLACK;
-					parent.color = RED;
-					rotateLeft(parent);
-				}
-				
-				/*case 2*: both children of sibling is black*/
-				else if(siblingL != NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK) {
-					sibling.color = RED;
-					cursor = parent;
-				}
-				
-				else {
-					
-					/*case 3: right child of sibling is black*/
-					if(siblingR != NIL && siblingR.color == BLACK) {
-						siblingL.color = BLACK;
-						sibling.color = RED;
-						rotateRight(sibling);
+				System.out.println("My sibling is: " + sibling.element);
+				if (sibling != null) {
+					if(sibling.left.element != null)
+						siblingL = (Entry<T>) sibling.left;
+					if(sibling.right.element != null)
+						siblingR = (Entry<T>) sibling.right;
+					System.out.println("My sibling is: " + sibling.element);
+					/*case 1*/
+					if(sibling.color == RED) {
+						sibling.color = BLACK;
+						parent.color = RED;
+						rotateLeft(parent);
 					}
 					
-					/*case 4: */
-					siblingR.color = BLACK;
-					sibling.color = parent.color;
-					parent.color = BLACK;
-					rotateLeft(parent);
-					cursor = (Entry<T>) root;
+					/*case 2*: both children of sibling is black*/
+					else if(sibling.color == BLACK && siblingL != null && siblingR != null && siblingL.color == BLACK && siblingR.color == BLACK) {
+						sibling.color = RED;
+						cursor = parent;
+					}
+					
+					else {
+						
+						/*case 3: right child of sibling is black*/
+						if(siblingR != NIL && siblingR.color == BLACK) {
+							siblingL.color = BLACK;
+							sibling.color = RED;
+							rotateRight(sibling);
+						}
+						
+						/*case 4: */
+						siblingR.color = BLACK;
+						sibling.color = parent.color;
+						parent.color = BLACK;
+						rotateLeft(parent);
+						cursor = (Entry<T>) root;
+					}
 				}
+				
 			} 
 			
 			else { /*cursor is right child*/
 				sibling = (Entry<T>) parent.left;
-				siblingL = (Entry<T>) sibling.left;
-				siblingR = (Entry<T>) sibling.right;
-					
-				/*case 1*/
-				if(sibling.color == RED) {
-					sibling.color = BLACK;
-					parent.color = RED;
-					rotateRight(parent);
-				}
-				
-				/*case 2:  both children of sibling is black*/ 
-				else if(siblingL!= NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK){
-					sibling.color = RED;
-					cursor = parent;
-				}
-				
-				
-				else {
-					
-					/*case 3: left child of sibling is black*/
-					if(siblingL != NIL && siblingL.color == BLACK) {
-						siblingR.color = BLACK;
-						sibling.color = RED;
-						rotateLeft(sibling);
+				System.out.println("My sibling is 2nd: " + sibling.element);
+				if (sibling != null) {
+					if(sibling.left.element != null)
+						siblingL = (Entry<T>) sibling.left;
+					if(sibling.right.element != null)
+						siblingR = (Entry<T>) sibling.right;
+						
+					/*case 1*/
+					if(sibling.color == RED) {
+						sibling.color = BLACK;
+						parent.color = RED;
+						rotateRight(parent);
 					}
-					//case 4
-					siblingL.color = BLACK;
-					sibling.color = parent.color;
-					parent.color = BLACK;
-					rotateRight(parent);
-					cursor = (Entry<T>) root;
+					
+					/*case 2:  both children of sibling is black*/ 
+					else if(siblingL!= null && siblingR != null && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK){
+						sibling.color = RED;
+						cursor = parent;
+					}
+					
+					
+					else {
+						
+						/*case 3: left child of sibling is black*/
+						if(siblingL != NIL && siblingL != null && siblingL.color == BLACK) {
+							siblingR.color = BLACK;
+							sibling.color = RED;
+							rotateLeft(sibling);
+						}
+						//case 4
+						siblingL.color = BLACK;
+						sibling.color = parent.color;
+						parent.color = BLACK;
+						rotateRight(parent);
+						cursor = (Entry<T>) root;
+					}
 				}
 			}
 		}
