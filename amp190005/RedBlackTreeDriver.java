@@ -9,14 +9,14 @@ import java.util.Scanner;
 public class RedBlackTreeDriver {
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner sc;
-		/*if (args.length > 0) {
+		if (args.length > 0) {
 			File file = new File(args[0]);
 			sc = new Scanner(file);
 		} else {
 			sc = new Scanner(System.in);
-		}*/
-		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\RBT\\src\\amp190005\\sk-t01.txt");
-		sc = new Scanner(file);
+		}
+		// File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\RBT\\src\\amp190005\\sk-t01.txt");
+		// sc = new Scanner(file);
 
 		String operation = "";
 		long operand = 0;
@@ -66,12 +66,12 @@ public class RedBlackTreeDriver {
 				}
 
 				case "Validate":{
-					boolean valid = redBlackTree.verifyRBT();
-					if(!valid)
-						System.out.println("Invalid RBT");
-					else{
-						System.out.println("Valid RBT");
-					}
+					// boolean valid = redBlackTree.verifyRBT();
+					// if(!valid)
+					// 	System.out.println("Invalid RBT");
+					// else{
+					// 	System.out.println("Valid RBT");
+					// }
 					break;
 				}
 			}
