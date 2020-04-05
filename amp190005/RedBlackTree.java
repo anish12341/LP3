@@ -1,6 +1,4 @@
 package LP3.amp190005;
-/** Starter code for Red-Black Tree
- */
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +60,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 */
 	public boolean add(T x) {
 		boolean add = super.add(x);
+		printParents();
 		// RedBlackTree.Entry<T> curr = new Entry(bstCurr.element, NIL, NIL);
 		if (add) {
 			BinarySearchTree.Entry<T> curr = getCurrent(x);
@@ -69,74 +68,79 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			if (size == 1) {
 				root = curr;
 			} else {
-
 				((Entry<T>)curr).setColor(RED);
-				Entry<T> parent = getParent(((Entry<T>)curr));
-				while (curr != ((Entry<T>)root) && parent != null && parent.color != BLACK && ((Entry<T>)curr).color != BLACK) {
-					if (isLeftChild(parent, null)) {
-						Entry<T> uncle = getUncle(((Entry<T>)curr), parent);
-						if (uncle.element != null && uncle.color == RED) {
-							parent.setColor(BLACK);
-							uncle.setColor(BLACK);
-							curr = getParent(parent);
-							if (curr != null) {
-								((Entry<T>)curr).setColor(RED);
-								parent = getParent(((Entry<T>)curr));
-							}
-						} else {
-							if (isRightChild(((Entry<T>)curr), parent)) {
-								rotateLeft((Entry<T>)parent);
-								Entry<T> temp = (Entry<T>)curr;
-								curr = parent;
-								parent = temp;
-							}
-							if (parent != null) {
-								parent.setColor(BLACK);
-								Entry<T> grandParent = getParent(parent);
-								if (grandParent != null) {
-									grandParent.setColor(RED);
-									rotateRight(grandParent);
-								}
-								curr = parent;
-								parent = getParent(((Entry<T>)curr));
-							}
-						}
-					} else {
-						Entry<T> uncle = getUncle(((Entry<T>)curr), parent);
-						if (uncle.element != null && uncle.color == RED) {
-							parent.setColor(BLACK);
-							uncle.setColor(BLACK);
-							curr = getParent(parent);
-							if (curr != null) {
-								((Entry<T>)curr).setColor(RED);
-								parent = getParent(((Entry<T>)curr));
-							}
-						} else {
-							if (isLeftChild(((Entry<T>)curr), parent)) {
-								rotateRight((Entry<T>)parent);
-								Entry<T> temp = (Entry<T>)curr;
-								curr = parent;
-								parent = temp;
-							}
-							if (parent != null) {
-								parent.setColor(BLACK);
-								Entry<T> grandParent = getParent(parent);
-
-								if (grandParent != null) {
-									grandParent.setColor(RED);
-									rotateLeft(grandParent);
-								}
-								curr = parent;
-								parent = getParent(((Entry<T>)curr));
-							}
-						}
-					}
-				}
-				((Entry<T>)root).setColor(BLACK);
+				insertFix((Entry<T>) curr);
+				((Entry<T>) root).color = BLACK;
 			}
 		}
 		return add;
 	}
+
+	private void insertFix(Entry<T> curr) {
+		Entry<T> parent = getParent(curr);
+		while (curr != root && parent != null && parent.color != BLACK && curr.color != BLACK) {
+			if (isLeftChild(parent, null)) {
+				Entry<T> uncle = getUncle(curr, parent);
+				if (uncle.element != null && uncle.color == RED) {
+					parent.setColor(BLACK);
+					uncle.setColor(BLACK);
+					curr = getParent(parent);
+					if (curr != null) {
+						curr.setColor(RED);
+						parent = getParent(curr);
+					}
+				} else {
+					if (isRightChild(curr, parent)) {
+						rotateLeft(parent);
+						Entry<T> temp = curr;
+						curr = parent;
+						parent = temp;
+					}
+					if (parent != null) {
+						parent.setColor(BLACK);
+						Entry<T> grandParent = getParent(parent);
+						if (grandParent != null) {
+							grandParent.setColor(RED);
+							rotateRight(grandParent);
+						}
+						curr = parent;
+						parent = getParent(curr);
+					}
+				}
+			} else {
+				Entry<T> uncle = getUncle(curr, parent);
+				if (uncle.element != null && uncle.color == RED) {
+					parent.setColor(BLACK);
+					uncle.setColor(BLACK);
+					curr = getParent(parent);
+					if (curr != null) {
+						curr.setColor(RED);
+						parent = getParent(curr);
+					}
+				} else {
+					if (isLeftChild(curr, parent)) {
+						rotateRight(parent);
+						Entry<T> temp = curr;
+						curr = parent;
+						parent = temp;
+					}
+					if (parent != null) {
+						parent.setColor(BLACK);
+						Entry<T> grandParent = getParent(parent);
+
+						if (grandParent != null) {
+							grandParent.setColor(RED);
+							rotateLeft(grandParent);
+						}
+						curr = parent;
+						parent = getParent(curr);
+					}
+				}
+			}
+		}
+	}
+
+
 
 	/**
 	 * To determine whether the current element is a left child of it's parent
@@ -231,73 +235,21 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 * @return Object of RBT.Entry
 	 */
 	public void convertToRBT(BinarySearchTree.Entry<T> curr) {
-		if (curr.left != null) {
+		if (curr.left.element != null) {
 			BinarySearchTree.Entry<T> temp = curr.left;
 			curr.left = new RedBlackTree.Entry<T>(temp.element, NIL, NIL);
 		}
-		if (curr.right != null) {
+		else{
+			curr.left = NIL;
+		}
+		if (curr.right.element != null) {
 			BinarySearchTree.Entry<T> temp = curr.right;
 			curr.right = new RedBlackTree.Entry<T>(temp.element, NIL, NIL);
 		}
+		else {
+			curr.right = NIL;
+		}
 	}
-
-	/**
-	 * setting up the color of new node
-	 * A Stack z is used to trace the path of the new node. All parents will be present.
-	 * @param x new node
-	 */
-	// private void insertFixViolation(Entry<T> x) {
-	// 	Entry<T> parent = (Entry<T>) z.pop();
-	// 	if (parent == null)
-	// 		return;
-	// 	Entry<T> grandparent = (Entry<T>) z.pop();
-	// 	Entry<T> uncle = null;
-
-	// 	// violation of property no two adjacent red nodes
-	// 	if (x != root && x.color == RED && parent.color == RED && grandparent != null) {
-
-	// 		// finding uncle
-	// 		if (grandparent.left == parent)
-	// 			uncle = (Entry<T>) grandparent.right;
-	// 		else
-	// 			uncle = (Entry<T>) grandparent.left;
-
-	// 		// requires only re-coloring and propagating to grandparent
-	// 		if (uncle != null && uncle.color == RED) {
-	// 			parent.color = BLACK;
-	// 			uncle.color = BLACK;
-	// 			grandparent.color = RED;
-	// 			insertFixViolation(grandparent);
-	// 		}
-
-	// 		// requires rotation and re-coloring
-	// 		else {
-	// 			if (grandparent.left == parent && parent.left == x) { // left left case
-	// 				rotateRight(grandparent);
-	// 			} else if (grandparent.left == parent && parent.right == x) { // left right case
-	// 				z.push(grandparent);
-	// 				rotateLeft(parent);
-	// 				z.pop();
-	// 				parent = (Entry<T>) grandparent.left;
-	// 				rotateRight(grandparent);
-	// 			} else if (grandparent.right == parent && parent.left == x) { // right left case
-	// 				z.push(grandparent);
-	// 				rotateRight(parent);
-	// 				z.pop();
-	// 				parent = (Entry<T>) grandparent.right;
-	// 				rotateLeft(grandparent);
-	// 			} else if (grandparent.right == parent && parent.right == x) { // right right case
-	// 				rotateLeft(grandparent);
-	// 			}
-
-	// 			// swap parent color and grand parent color
-	// 			boolean temp = grandparent.color;
-	// 			grandparent.color = parent.color;
-	// 			parent.color = temp;
-	// 			insertFixViolation(parent);
-	// 		}
-	// 	}
-	// }
 
 	/**
 	 * rotation of tree to the left around parentNode
@@ -341,320 +293,157 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		}
 	}
 
-	/**
-	 * Helper function used for insertion
-	 * Searches where new node is inserted in the tree.
-	 * @param node - root node of RBT Entry type
-	 * @return	- new node inserted as BST Entry Type
-	 */
-	private Entry<T> bstNodeToRBNode(Entry<T> node) {
-		if (node == NIL) {
-			return NIL;
-		} else if (node.left != NIL && !(node.left instanceof RedBlackTree.Entry)) {
-			return node;
-		} else if (node.right != NIL && !(node.right instanceof RedBlackTree.Entry)) {
-			return node;
-		}
-		Entry<T> t;
-		t = bstNodeToRBNode((Entry<T>) node.left);
-		if (t != NIL)
-			return t;
-		t = bstNodeToRBNode((Entry<T>) node.right);
-		return t;
-	}
 
 	public Entry<T> remove(T x) {
-	    Entry<T> removed = (Entry<T>)super.remove(x);
-	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
-	    if (removed.color == RED)
-	    	return removed;
-	    if(removed.color == BLACK)
-	    	fixUp(cursor);
+		Entry<T> removed = (Entry<T>)super.remove(x);
+		Entry<T> cursor = null;
+		System.out.println("After removing:");
+		print();
+		Entry<T> splicedChild = (Entry<T>) super.getsplicedChild();
 
-	    return removed;
-	 }
+		if(splicedChild.element != null) {
+			cursor = (Entry<T>) super.find(splicedChild.element);
+		}
+		if (removed.isLeafNode() && removed.color == RED)
+			return removed;
+
+		else if(removed.color == BLACK){
+			System.out.println("Cursor: " + cursor.element);
+			fixUp(cursor);
+			return removed;
+		}
+		return null;
+	}
 
 	public void fixUp(Entry<T> cursor) {
-		Entry<T> sibling = null;
+		Entry<T> sibling;
 		Entry<T> siblingL = null;
 		Entry<T> siblingR = null;
-		Entry<T> parent = (Entry<T>) getParent(cursor);
+		Entry<T> parent = getParent(cursor);
+		System.out.println("Parent(fixUp): " + parent.element);
+
 		if(cursor == root) {
 			System.out.println("Cursor is root ");
 			cursor.color = BLACK;
 			return;
 		}
+
+
 		while (cursor != root && cursor.color == BLACK) {
 
-			if(parent.left == cursor) {
+//			Cursor is left child
+			if (parent.left == cursor) {
+				System.out.println("Cursor is left child");
 				sibling = (Entry<T>) parent.right;
-				if(sibling.left.element != null)
-					siblingL = (Entry<T>) sibling.left;
-				if(sibling.right.element != null)
-					siblingR = (Entry<T>) sibling.right;
+				siblingL = (Entry<T>) sibling.left;
+				siblingR = (Entry<T>) sibling.right;
 
-				/*case 1*/
-				if(sibling.color == RED) {
+				if (sibling != null) {
+					System.out.println("Sibling: " + sibling.element);
+				}
+
+//				case 1: sibling color is red
+				if (sibling.color == RED) {
+					System.out.println("Case 1: Sibling color is red");
 					sibling.color = BLACK;
 					parent.color = RED;
 					rotateLeft(parent);
 				}
 
-				/*case 2*: both children of sibling is black*/
-				else if(siblingL != NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK) {
+//				case 2*: both children of sibling is black
+				if (sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK) {
+					System.out.println("Case 2: both children of sibling is black");
 					sibling.color = RED;
 					cursor = parent;
 				}
 
+//				case 3: right child of sibling is black
 				else {
-
-					/*case 3: right child of sibling is black*/
-					if(siblingR != NIL && siblingR.color == BLACK) {
+					System.out.println("Case 3: right child of sibling is black");
+					if (siblingR.color == BLACK) {
 						siblingL.color = BLACK;
 						sibling.color = RED;
 						rotateRight(sibling);
 					}
 
-					/*case 4: */
+
+					System.out.println("Case 4");
+//					case 4:
 					siblingR.color = BLACK;
 					sibling.color = parent.color;
 					parent.color = BLACK;
 					rotateLeft(parent);
-					cursor = (Entry<T>) root;
+					cursor = (Entry<T>) this.root;
 				}
 			}
 
-			else { /*cursor is right child*/
+//			cursor is right child
+			else {
+				System.out.println("Cursor is right child");
 				sibling = (Entry<T>) parent.left;
 				siblingL = (Entry<T>) sibling.left;
 				siblingR = (Entry<T>) sibling.right;
 
-				/*case 1*/
-				if(sibling.color == RED) {
+//				case 1: Sibling color is red
+				if (sibling.color == RED) {
+					System.out.println("Case 1: Sibling color is red");
 					sibling.color = BLACK;
 					parent.color = RED;
 					rotateRight(parent);
 				}
 
-				/*case 2:  both children of sibling is black*/
-				else if(siblingL!= NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK){
+//				case 2:  both children of sibling is black
+				if (sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK) {
+					System.out.println("Case 2: both children of sibling is black");
 					sibling.color = RED;
 					cursor = parent;
 				}
 
-
+//				case 3: left child of sibling is black
 				else {
-
-					/*case 3: left child of sibling is black*/
-					if(siblingL != NIL && siblingL.color == BLACK) {
+					System.out.println("Case 3: left child of sibling is black");
+					if (siblingL.color == BLACK) {
 						siblingR.color = BLACK;
 						sibling.color = RED;
 						rotateLeft(sibling);
 					}
-					//case 4
+						//case 4
+					System.out.println("Case 4");
 					siblingL.color = BLACK;
 					sibling.color = parent.color;
 					parent.color = BLACK;
 					rotateRight(parent);
-					cursor = (Entry<T>) root;
+					cursor = (Entry<T>) this.root;
+
 				}
 			}
 		}
+
+		if(cursor.color == RED){
+			cursor.color = BLACK;
+		}
 	}
 
-	/**
-	 * Uses BSTRemove function to clear the value
-	 * This function re-balances the color of the tree.
-	 * @param x - node to be removed
-	 */
-	// public T remove(T x) {
-	// 	T remove = super.remove(x);
-
-	// 	// when actual deleted node after BST is leaf and its color is red
-	// 	if (isLeafNode && deletedNodeColor == RED) {
-	// 		return remove;
-	// 	}
-
-	// 	// when actual deleted node after BST is leaf and its color is black
-	// 	else if (isLeafNode && deletedNodeColor == BLACK) {
-	// 		deleteFixViolation();
-	// 		return remove;
-	// 	}
-
-	// 	// non leaf node i.e. replaced by a child which is non leaf
-	// 	else if(!isLeafNode && deletedNodeColor==BLACK){
-	// 		if(direction.equals("right")) {
-	// 			((Entry<T>)(z.peek().right)).color = BLACK;
-
-	// 		}
-	// 		else if(direction.equals("left")) {
-	// 			((Entry<T>)(z.peek().left)).color = BLACK;
-	// 		}
-	// 		return remove;
-	// 	}
-	// 	return null;
-	// }
-
-	/**
-	 * This method recursively fixes the violation of RBTree properties
-	 * after a node is deleted
-	 */
-	// private void deleteFixViolation() {
-	// 	Entry<T> sibling = null;
-	// 	Entry<T> parent = (Entry<T>) z.pop();
-
-	// 	// find sibling
-	// 	if (direction.equals("right"))
-	// 		sibling = (Entry<T>) parent.left;
-	// 	else if (direction.equals("left"))
-	// 		sibling = (Entry<T>) parent.right;
-
-	// 	// sibling exists & it's color is black
-	// 	if (sibling != null && sibling.color == BLACK) {
-
-	// 		// sibling's both child are null
-	// 		if (sibling.left == NIL && sibling.right == NIL) {
-	// 			sibling.color = RED;
-	// 			if (parent.color == RED) {
-	// 				parent.color = BLACK;
-	// 				return;
-	// 			}
-	// 			if (z.peek()!=null && z.peek().left.element != null &&z.peek().left.element.equals(parent.element)) {
-	// 				direction = "left";
-	// 				deleteFixViolation();
-	// 			} else if (z.peek()!=null && z.peek().right.element!=null && z.peek().right.element.equals(parent.element)) {
-	// 				direction = "right";
-	// 				deleteFixViolation();
-	// 			}
-	// 		}
-
-	// 		// sibling's both child are RED
-	// 		else if (sibling.right != null && ((Entry<T>) (sibling.right)).color == RED && sibling.left != null
-	// 				&& ((Entry<T>) (sibling.left)).color == RED) {
-	// 			if (direction.equals("right")) {
-	// 				rotateRight(parent);
-	// 				boolean temp = parent.color;
-	// 				parent.color = sibling.color;
-	// 				sibling.color = temp;
-	// 				((Entry<T>) (sibling.left)).color = BLACK;
-	// 				return;
-	// 			} else if (direction.equals("left")) {
-	// 				rotateLeft(parent);
-	// 				boolean temp = parent.color;
-	// 				parent.color = sibling.color;
-	// 				sibling.color = temp;
-	// 				((Entry<T>) (sibling.right)).color = BLACK;
-	// 				return;
-	// 			}
-	// 		}
-
-	// 		// sibling's right child is RED
-	// 		else if (sibling.right != null && ((Entry<T>) (sibling.right)).color == RED) {
-	// 			if (direction.equals("right")) { // left right case
-	// 				z.push(parent);
-	// 				rotateLeft(sibling);
-	// 				sibling = (Entry<T>) parent.left;
-	// 				boolean temp = sibling.color;
-	// 				sibling.color = ((Entry<T>) (sibling.left)).color;
-	// 				((Entry<T>) (sibling.left)).color = temp;
-	// 				if (z.peek()!=null && z.peek().left.element!= null &&z.peek().left.element.equals(parent.element)) {
-	// 					direction = "left";
-	// 					deleteFixViolation();
-	// 				} else if (z.peek()!=null && z.peek().right.element != null && z.peek().right.element.equals(parent.element)) {
-	// 					direction = "right";
-	// 					deleteFixViolation();
-	// 				}
-	// 			} else if (direction.equals("left")) { // right right case
-	// 				rotateLeft(parent);
-	// 				boolean temp = parent.color;
-	// 				parent.color = sibling.color;
-	// 				sibling.color = temp;
-	// 				((Entry<T>) (sibling.right)).color = BLACK;
-	// 				return;
-	// 			}
-	// 		}
-
-	// 		// sibling's left child is RED
-	// 		else if (sibling.left != null && ((Entry<T>) (sibling.left)).color == RED) {
-	// 			if (direction.equals("right")) {
-	// 				rotateRight(parent);
-	// 				boolean temp = parent.color;
-	// 				parent.color = sibling.color;
-	// 				sibling.color = temp;
-	// 				((Entry<T>) (sibling.left)).color = BLACK;
-	// 				return;
-	// 			} else if (direction.equals("left")) {
-	// 				z.push(parent);
-	// 				rotateRight(sibling);
-	// 				sibling = (Entry<T>) parent.right;
-	// 				boolean temp = sibling.color;
-	// 				sibling.color = ((Entry<T>) (sibling.right)).color;
-	// 				((Entry<T>) (sibling.right)).color = temp;
-
-	// 				if (z.peek()!=null && z.peek().left.element!= null && z.peek().left.element.equals(parent.element)) {
-	// 					direction = "left";
-	// 					deleteFixViolation();
-	// 				} else if (z.peek()!=null && z.peek().right.element!=null &&z.peek().right.element.equals(parent.element)) {
-	// 					direction = "right";
-	// 					deleteFixViolation();
-	// 				}
-	// 			}
-	// 		}
-
-	// 		// all remaining cases mostly when sibling and both its child are BLACK
-	// 		else {
-	// 			sibling.color = RED;
-	// 			if (parent.color == RED) {
-	// 				parent.color = BLACK;
-	// 				return;
-	// 			}
-	// 			if (z.peek()!=null && z.peek().left.element!= null &&z.peek().left.element.equals(parent.element)) {
-	// 				direction = "left";
-	// 				deleteFixViolation();
-	// 			} else if (z.peek()!=null && z.peek().right.element != null && z.peek().right.element.equals(parent.element)) {
-	// 				direction = "right";
-	// 				deleteFixViolation();
-	// 			}
-	// 		}
-	// 	}
-
-	// 	// sibling is RED in color, color of child doesn't matter
-	// 	else if (sibling != null && sibling.color == RED) {
-
-	// 		if (direction.equals("right")) {
-	// 			rotateRight(parent);
-	// 		} else if (direction.equals("left")) {
-	// 			rotateLeft(parent);
-	// 		}
-
-	// 		// swap parent color and sibling color
-	// 		boolean temp = parent.color;
-	// 		parent.color = sibling.color;
-	// 		sibling.color = temp;
-	// 		z.push(sibling);
-	// 		z.push(parent);
-	// 		deleteFixViolation();
-	// 	}
-
-	// }
 
 	/**
 	 * overrides BST printTree method
 	 */
 	public void printTree() {
 		System.out.print("[" + size + "]");
-		System.out.println("Root: " + root.element);
 		this.printTree((Entry<T>) root);
 		System.out.println();
 	}
 
 	// In order traversal of RBTree
 	public void printTree(Entry<T> node) {
-		if (node.element != null) {
+		if (node != null) {
 			// System.out.print("Type: " + node.getClass() + " ");
 			printTree((Entry<T>) node.left);
 			String s = node.color == BLACK ? (String) "B" : "R";
-			System.out.print(" " + node.element + "" + s);
+			if(node == NIL)
+				System.out.print(" " + "NIL" + "" + s);
+			else
+				System.out.print(" " + node.element + "" + s);
 			printTree((Entry<T>) node.right);
 		}
 	}
@@ -668,56 +457,102 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			return true;
 	}
 
-	// public boolean validateNodes(Entry<T> node){
+	public boolean validateNodes(Entry<T> node){
 
-	// 	Entry<T> leftNode= (Entry<T>) node.left;
-	// 	Entry<T> rightNode = (Entry<T>) node.right;
+		Entry<T> leftNode= (Entry<T>) node.left;
+		Entry<T> rightNode = (Entry<T>) node.right;
 
-	// 	if (node.isLeaf() && node.color == RED) {
-	// 		// Leafs should not be red
-	// 		System.out.println("Leaf node is not red");
-	// 		return false;
-	// 	}
+		if (node.isLeafNode()) {
+			if(leftNode.color == RED  || leftNode.color == RED) {
+				// Leafs should not be red
+				System.out.println("NIL should not be red");
+				return false;
+			} else
+				return true;
+		}
 
-	// 	if (node.color == RED) {
-	// 		// You should not have two red nodes in a row
+		if (node.color == RED) {
+			// You should not have two red nodes in a row
 
-	// 		if (leftNode.color == RED) {
-	// 			System.out.println("Adjacent red left nodes: "+ node.element + " and " + leftNode.element);
-	// 			return false;
-	// 		}
-	// 		if (rightNode.color == RED) {
-	// 			System.out.println("Adjacent red right nodes: "+ node.element + " and " + rightNode.element);
-	// 			return false;
-	// 		}
-	// 	}
+			if (leftNode.color == RED) {
+				System.out.println("Adjacent red left nodes: "+ node.element + " and " + leftNode.element);
+				return false;
+			}
+			if (rightNode.color == RED) {
+				System.out.println("Adjacent red right nodes: "+ node.element + " and " + rightNode.element);
+				return false;
+			}
+		}
 
-	// 	if (leftNode != NIL && !leftNode.isLeaf()) {
-	// 		// Check BST property
-	// 		boolean leftCheck = leftNode.element.compareTo(node.element) <= 0;
-	// 		if (!leftCheck)
-	// 			return false;
-	// 		// Check red-black property
-	// 		leftCheck = this.validateNodes(leftNode);
-	// 		if (!leftCheck)
-	// 			return false;
-	// 	}
+		if (leftNode.element != null && !leftNode.isLeafNode()) {
+			// Check BST property
+			boolean leftCheck = leftNode.element.compareTo(node.element) <= 0;
+			if (!leftCheck){
+				System.out.println("Does not satisfy BST property for LEFT NODE " + leftNode.element);
+				return false;
+			}
 
-	// 	if (rightNode != NIL  && !rightNode.isLeaf()) {
-	// 		// Check BST property
-	// 		boolean rightCheck = rightNode.element.compareTo(node.element) > 0;
-	// 		if (!rightCheck)
-	// 			return false;
-	// 		// Check red-black property
-	// 		rightCheck = this.validateNodes(rightNode);
-	// 		if (!rightCheck)
-	// 			return false;
-	// 	}
-	// 	return true;
-	// }
+			// Check red-black property
+			leftCheck = this.validateNodes(leftNode);
+			if (!leftCheck){
+				System.out.println("Does not satisfy RBT property for LEFT NODE " + leftNode.element);
+				return false;
+			}
+		}
 
+		if (rightNode.element != null  && !rightNode.isLeafNode()) {
+			// Check BST property
+			boolean rightCheck = rightNode.element.compareTo(node.element) > 0;
+			if (!rightCheck){
+				System.out.println("Does not satisfy BST property for RIGHT NODE " + rightNode.element);
+				return false;
+			}
+			// Check red-black property
 
-	public int computeHeight(Entry<T> node){
+			rightCheck = this.validateNodes(rightNode);
+			if (!rightCheck) {
+				System.out.println("Does not satisfy RBT property for RIGHT NODE " + rightNode.element);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	class Height {
+		int height = 0;
+	}
+
+	boolean isBalanced(Entry<T> root, Height height)
+	{
+		/* If tree is empty then return true */
+		if (root.element == null) {
+			height.height = 0;
+			return true;
+		}
+
+		/* Get heights of left and right sub trees */
+		Height lheight = new Height(), rheight = new Height();
+		boolean l = isBalanced((Entry<T>) root.left, lheight);
+		boolean r = isBalanced((Entry<T>) root.right, rheight);
+		int lh = lheight.height, rh = rheight.height;
+
+        /* Height of current node is max of heights of
+           left and right subtrees plus 1*/
+		height.height = (lh > rh ? lh : rh) + 1;
+
+        /* If difference between heights of left and right
+           subtrees is more than 2 then this node is not balanced
+           so return 0 */
+		if ((lh - rh >= 3) || (rh - lh >= 3))
+			return false;
+
+        /* If this node is balanced and left and right subtrees
+           are balanced then return true */
+		else
+			return l && r;
+	}
+
+	/*public int computeHeight(Entry<T> node){
 		if(node == NIL){
 			return 0;
 		}
@@ -736,33 +571,35 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 	public boolean isBlackHeightValid(Entry<T> root){
 		return computeHeight(root) != -1;
+	}*/
+
+	public boolean verifyRBT(){
+		if(!isRootBlack()) {
+			System.out.println("Root is not black");
+			return false;
+		}
+		else if(!validateNodes((Entry<T>) root)) {
+			System.out.println("Not a valid RBT");
+			return false;
+		}
+		else if(!isBalanced((Entry<T>) root, new Height())){
+			System.out.println("Invalid height");
+			return false;
+		}
+		else {
+			System.out.println("Valid RBT");
+			return true;
+		}
 	}
 
-	// public boolean verifyRBT(){
-	// 	if(!isRootBlack()) {
-	// 		System.out.println("Root is not black");
-	// 		return false;
-	// 	}
-	// 	if(!validateNodes((Entry<T>) root)) {
-	// 		System.out.println("Not a valid RBT");
-	// 		return false;
-	// 	}
-	// 	if(!isBlackHeightValid((Entry<T>) root)){
-	// 		System.out.println("Invalid height");
-	// 		return false;
-	// 	}
-	// 	System.out.println("Valid RBT");
-	// 	return true;
-	// }
-
-	public void print(Entry<T> root)
+	public void print()
 	{
 		List<List<String>> lines = new ArrayList<List<String>>();
 
 		List<Entry<T>> level = new ArrayList<Entry<T>>();
 		List<Entry<T>> next = new ArrayList<Entry<T>>();
 
-		level.add(root);
+		level.add((Entry<T>) root);
 		int nn = 1;
 
 		int widest = 0;
@@ -773,12 +610,17 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			nn = 0;
 
 			for (Entry<T> n : level) {
-				if (n.element == null) {
+				if (n == null) {
+					line.add("null");
+					next.add(null);
+					next.add(null);
+				}
+				else if(n == NIL){
 					line.add("NIL");
-
-					next.add(NIL);
-					next.add(NIL);
-				} else {
+					next.add((Entry<T>) NIL.element);
+					next.add((Entry<T>) NIL.element);
+				}
+				else {
 					String color = n.color == BLACK ? (String) "B" : "R";
 					String aa = String.valueOf(n.element) + color;
 					line.add(aa);
@@ -787,8 +629,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 					next.add((Entry<T>) n.left);
 					next.add((Entry<T>) n.right);
 
-					if (n.left!= null) nn++;
-					if (n.right != null) nn++;
+					if (n.left!= NIL) nn++;
+					if (n.right != NIL) nn++;
 				}
 			}
 
@@ -866,46 +708,46 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	/**
 	 * Sample Input 10 85 15 70 20 60 30 50 65 80 90 40 5 55 -60 -15 -85 -70 -90 -20
 	 *
-	 	10
-		Add 10 : [1] 10B
-		85
-		Add 85 : [2] 10B 85R
-		15
-		Add 15 : [3] 10R 15B 85R
-		70
-		Add 70 : [4] 10B 15B 70R 85B
-		20
-		Add 20 : [5] 10B 15B 20R 70B 85R
-		60
-		Add 60 : [6] 10B 15B 20B 60R 70R 85B
-		30
-		Add 30 : [7] 10B 15B 20R 30B 60R 70R 85B
-		50
-		Add 50 : [8] 10B 15R 20B 30B 50R 60B 70R 85B
-		65
-		Add 65 : [9] 10B 15R 20B 30B 50R 60B 65R 70R 85B
-		80
-		Add 80 : [10] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B
-		90
-		Add 90 : [11] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B 90R
-		40
-		Add 40 : [12] 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
-		5
-		Add 5 : [13] 5R 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
-		55
-		Add 55 : [14] 5R 10B 15B 20B 30B 40R 50B 55R 60R 65B 70B 80R 85B 90R
-		-60
-		Remove -60 : [13] 5R 10B 15B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
-		-15
-		Remove -15 : [12] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
-		-85
-		Remove -85 : [11] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 90B
-		-70
-		Remove -70 : [10] 5B 10B 20B 30B 40B 50R 55R 65B 80B 90B
-		-90
-		Remove -90 : [9] 5B 10B 20B 30B 40B 50B 55B 65R 80B
-		-20
-		Remove -20 : [8] 5R 10B 30B 40B 50B 55B 65B 80B
+	 10
+	 Add 10 : [1] 10B
+	 85
+	 Add 85 : [2] 10B 85R
+	 15
+	 Add 15 : [3] 10R 15B 85R
+	 70
+	 Add 70 : [4] 10B 15B 70R 85B
+	 20
+	 Add 20 : [5] 10B 15B 20R 70B 85R
+	 60
+	 Add 60 : [6] 10B 15B 20B 60R 70R 85B
+	 30
+	 Add 30 : [7] 10B 15B 20R 30B 60R 70R 85B
+	 50
+	 Add 50 : [8] 10B 15R 20B 30B 50R 60B 70R 85B
+	 65
+	 Add 65 : [9] 10B 15R 20B 30B 50R 60B 65R 70R 85B
+	 80
+	 Add 80 : [10] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B
+	 90
+	 Add 90 : [11] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B 90R
+	 40
+	 Add 40 : [12] 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
+	 5
+	 Add 5 : [13] 5R 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
+	 55
+	 Add 55 : [14] 5R 10B 15B 20B 30B 40R 50B 55R 60R 65B 70B 80R 85B 90R
+	 -60
+	 Remove -60 : [13] 5R 10B 15B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
+	 -15
+	 Remove -15 : [12] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
+	 -85
+	 Remove -85 : [11] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 90B
+	 -70
+	 Remove -70 : [10] 5B 10B 20B 30B 40B 50R 55R 65B 80B 90B
+	 -90
+	 Remove -90 : [9] 5B 10B 20B 30B 40B 50B 55B 65R 80B
+	 -20
+	 Remove -20 : [8] 5R 10B 30B 40B 50B 55B 65B 80B
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -918,13 +760,16 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 				System.out.println("Add " + x + " : ");
 				t.add(x);
 				System.out.print("Root " + t.root.element + " : ");
-
-				t.print((Entry<Integer>) t.root);
+				t.printTree();
+				t.print();
+				t.verifyRBT();
 			} else if (x < 0) {
 				System.out.print("Remove " + -x + " : ");
 				t.remove(-x);
 				System.out.println("Direction: "+t.direction);
-				t.print((Entry<Integer>) t.root);
+				t.printTree();
+				t.print();
+				t.verifyRBT();
 			} else {
 				Comparable[] arr = t.toArray();
 				System.out.print("Final: ");
@@ -936,5 +781,15 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			}
 		}
 
+	}
+
+	public void printParents() {
+		System.out.print("Parent's length: " + parents.size() + " ");
+		for (int i = 1; i < parents.size(); i++) {
+			System.out.print(parents.get(i).element + " -");
+		}
+		// if (parents.peek() != null)
+		//     System.out.println("Top: " + parents.peek().element);
+		System.out.println();
 	}
 }

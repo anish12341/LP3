@@ -45,7 +45,8 @@ public class RedBlackTreeDriver {
 					if (redBlackTree.remove(operand) != null) {
 						result = (result + 1) % modValue;
 					}
-					redBlackTree.print((RedBlackTree.Entry<Long>) redBlackTree.root);
+
+					redBlackTree.print();
 					/*if(!redBlackTree.verifyRBT())
 						break;*/
 					break;
