@@ -15,7 +15,7 @@ public class RedBlackTreeDriver {
 		} else {
 			sc = new Scanner(System.in);
 		}*/
-		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\RBT\\src\\amp190005\\sk-t01.txt");
+		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\LP3Git\\src\\LP3\\amp190005\\sk-t01.txt");
 		sc = new Scanner(file);
 
 		String operation = "";
@@ -34,7 +34,6 @@ public class RedBlackTreeDriver {
 						result = (result + 1) % modValue;
 					}
 
-					redBlackTree.printTree();
 					/*if(!redBlackTree.verifyRBT())
 						break;
 					*/
@@ -46,7 +45,7 @@ public class RedBlackTreeDriver {
 					if (redBlackTree.remove(operand) != null) {
 						result = (result + 1) % modValue;
 					}
-					redBlackTree.printTree();
+					redBlackTree.print((RedBlackTree.Entry<Long>) redBlackTree.root);
 					/*if(!redBlackTree.verifyRBT())
 						break;*/
 					break;

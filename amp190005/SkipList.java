@@ -1,13 +1,12 @@
 /* Starter code for LP3 */
 
 // Change this to netid of any member of team
-package amp190005;
+package LP3.amp190005;
 
-import java.util.Iterator;
-import java.util.Random;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Scanner;
 
 // Skeleton for skip list implementation.
