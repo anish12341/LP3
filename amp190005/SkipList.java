@@ -135,14 +135,14 @@ public class SkipList<T extends Comparable<? super T>> {
     }
 
 
-    // Not a standard operation in skip lists. 
+    // Not a standard operation in skip lists.
     public void rebuild() {
 
     }
 
     // Remove x from list.  Removed element is returned. Return null if x not in list
     public T remove(T x) {
-    	if(!contains(x)) 
+    	if(!contains(x))
     		return null;
     	Entry entry = pred[0].next[0];
     	int height = entry.height();
@@ -186,7 +186,7 @@ public class SkipList<T extends Comparable<? super T>> {
         SkipList<Long> skipList = new SkipList<>();
         // Initialize the timer
         Timer timer = new Timer();
-        
+
         System.out.println("Available operations");
         System.out.println("Add");
         System.out.println("Ceiling");
