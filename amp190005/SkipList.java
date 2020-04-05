@@ -230,7 +230,6 @@ public class SkipList<T extends Comparable<? super T>> {
             Entry p = head;
             System.out.print("Level " + i + ": ");
             while (p != null) {
-                System.out.print(p.getElement() + " skipping:(" + p.skipCount[i] + ")" +" -> ");
                 p = p.next[i];
             }
             System.out.println();
@@ -274,7 +273,6 @@ public class SkipList<T extends Comparable<? super T>> {
                     if(skipList.add(operand)) {
                         result = (result + 1) % modValue;
                     }
-                    // skipList.printSkipList();
                     break;
                 }
                 case "Ceiling": {
@@ -295,7 +293,6 @@ public class SkipList<T extends Comparable<? super T>> {
                 case "Get": {
                     int intOperand = sc.nextInt();
                     returnValue = skipList.get(intOperand);
-                    // System.out.println("Returned: " + returnValue);
                     if (returnValue != null) {
                         result = (result + returnValue) % modValue;
                     }
@@ -320,20 +317,20 @@ public class SkipList<T extends Comparable<? super T>> {
                     operand = sc.nextLong();
                     if (skipList.remove(operand) != null) {
                         result = (result + 1) % modValue;
-                        // System.out.println("Removed Entry: "+operand);
+                        System.out.println("Removed Entry: "+operand);
                     }
-                    // else
-                    // 	System.out.println(operand+" is not present in the Skiplist");
-                    // skipList.printSkipList();
+                    else
+                    	System.out.println(operand+" is not present in the Skiplist");
+                    skipList.printSkipList();
                     break;
                 }
                 case "Contains":{
                     operand = sc.nextLong();
                     if (skipList.contains(operand)) {
                         result = (result + 1) % modValue;
-                        // System.out.println("Yes I am here");
+                        System.out.println("Yes I am here");
                     } else {
-                        // System.out.println("No I am not");
+                        System.out.println("No I am not");
                     }
                     break;
                 }

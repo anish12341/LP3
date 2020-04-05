@@ -40,6 +40,12 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		void setColor(boolean color) {
 			this.color = color;
 		}
+		
+		boolean isLeafNode(){
+			if(left.element == null && right.element == null)
+				return true;
+			return false;
+		}
 	}
 
 	Entry<T> NIL;
@@ -304,7 +310,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		Entry<T> temp = (Entry<T>) parentNode.right; // temp = p address
 		parentNode.right = temp.left;
 		temp.left = parentNode;
-		// System.out.println("Result of left rotation" + temp.left.element + " " + parents.peek().element);
 		if (parents.peek() != null && parents.peek().left == parentNode) {
 			parents.peek().left = temp;
 		} else if (parents.peek() != null && parents.peek().right == parentNode) {
@@ -355,6 +360,105 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			return t;
 		t = bstNodeToRBNode((Entry<T>) node.right);
 		return t;
+	}
+	
+	public Entry<T> remove(T x) {
+	    Entry<T> removed = (Entry<T>)super.remove(x);
+	    Entry<T> cursor = (Entry<T>) super.getsplicedChild();
+	    if (removed.color == RED) 
+	    	return removed;
+	    if(removed.color == BLACK) 
+	    	fixUp(cursor);
+	    
+	    return removed;
+	 }
+	
+	public void fixUp(Entry<T> cursor) {
+		Entry<T> sibling = null;
+		Entry<T> siblingL = null;
+		Entry<T> siblingR = null;
+		Entry<T> parent = (Entry<T>) parents.peek();
+		if(cursor == root) {
+			System.out.println("Cursor is root ");
+			cursor.color = BLACK;
+			return;
+		}
+		while (cursor != root && cursor.color == BLACK) {
+			 
+			if(parent.left == cursor) {
+				sibling = (Entry<T>) parent.right;
+				if(sibling.left.element != null)
+					siblingL = (Entry<T>) sibling.left;
+				if(sibling.right.element != null)
+					siblingR = (Entry<T>) sibling.right;
+				
+				/*case 1*/
+				if(sibling.color == RED) {
+					sibling.color = BLACK;
+					parent.color = RED;
+					rotateLeft(parent);
+				}
+				
+				/*case 2*: both children of sibling is black*/
+				else if(siblingL != NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK) {
+					sibling.color = RED;
+					cursor = parent;
+				}
+				
+				else {
+					
+					/*case 3: right child of sibling is black*/
+					if(siblingR != NIL && siblingR.color == BLACK) {
+						siblingL.color = BLACK;
+						sibling.color = RED;
+						rotateRight(sibling);
+					}
+					
+					/*case 4: */
+					siblingR.color = BLACK;
+					sibling.color = parent.color;
+					parent.color = BLACK;
+					rotateLeft(parent);
+					cursor = (Entry<T>) root;
+				}
+			} 
+			
+			else { /*cursor is right child*/
+				sibling = (Entry<T>) parent.left;
+				siblingL = (Entry<T>) sibling.left;
+				siblingR = (Entry<T>) sibling.right;
+					
+				/*case 1*/
+				if(sibling.color == RED) {
+					sibling.color = BLACK;
+					parent.color = RED;
+					rotateRight(parent);
+				}
+				
+				/*case 2:  both children of sibling is black*/ 
+				else if(siblingL!= NIL && siblingR != NIL && sibling.color == BLACK && siblingL.color == BLACK && siblingR.color == BLACK){
+					sibling.color = RED;
+					cursor = parent;
+				}
+				
+				
+				else {
+					
+					/*case 3: left child of sibling is black*/
+					if(siblingL != NIL && siblingL.color == BLACK) {
+						siblingR.color = BLACK;
+						sibling.color = RED;
+						rotateLeft(sibling);
+					}
+					//case 4
+					siblingL.color = BLACK;
+					sibling.color = parent.color;
+					parent.color = BLACK;
+					rotateRight(parent);
+					cursor = (Entry<T>) root;
+				}
+			}
+		}
 	}
 
 	/**
@@ -701,12 +805,15 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		while (in.hasNext()) {
 			int x = in.nextInt();
 			if (x > 0) {
-				System.out.print("Add " + x + " : ");
+				System.out.println("Add " + x + " : ");
 				t.add(x);
+				System.out.print("Root " + t.root.element + " : ");
+				
 				t.printTree();
 			} else if (x < 0) {
-				System.out.print("Remove " + x + " : ");
+				System.out.print("Remove " + -x + " : ");
 				t.remove(-x);
+				System.out.println("Direction: "+t.direction);
 				t.printTree();
 			} else {
 				Comparable[] arr = t.toArray();
