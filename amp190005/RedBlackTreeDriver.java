@@ -15,7 +15,7 @@ public class RedBlackTreeDriver {
 		} else {
 			sc = new Scanner(System.in);
 		}*/
-		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\LP3Git\\src\\LP3\\amp190005\\sk-t01.txt");
+		File file = new File("C:\\Users\\Ishan\\IdeaProjects\\Implementation of DS and Algo\\LP3Git\\src\\LP3\\amp190005\\sk-t02.txt");
 		sc = new Scanner(file);
 
 		String operation = "";
@@ -30,49 +30,49 @@ public class RedBlackTreeDriver {
 			switch (operation) {
 				case "Add": {
 					operand = sc.nextLong();
+					System.out.print("Add element:" + operand);
 					if(redBlackTree.add(operand)) {
 						result = (result + 1) % modValue;
+						System.out.println(" Added: " + operand);
 					}
-
-					/*if(!redBlackTree.verifyRBT())
-						break;
-					*/
+					redBlackTree.printTree();
 					break;
 				}
-				case "Remove": {
+				/*case "Remove": {
 					operand = sc.nextLong();
-					System.out.println("Remove element:"+operand);
+					System.out.print("Remove element:"+operand);
 					if (redBlackTree.remove(operand) != null) {
 						result = (result + 1) % modValue;
+						System.out.println(" ---> Removed: " + operand);
 					}
-
-					redBlackTree.print();
-					/*if(!redBlackTree.verifyRBT())
-						break;*/
+					redBlackTree.printTree();
 					break;
-				}
+				}*/
 				case "Contains":{
 					operand = sc.nextLong();
 					if (redBlackTree.contains(operand)) {
 						result = (result + 1) % modValue;
-						System.out.println("Tree contains:"+operand);
+						System.out.println("CONTAINS: "+operand);
 					}
 					else{
-						System.out.println("Tree DOES'T CONTAIN " + operand);
+						System.out.println("DOES'T CONTAIN: " + operand);
 					}
 					redBlackTree.printTree();
-					System.out.println("Result:"+ result);
 					break;
 				}
 
 				case "Validate":{
-//					boolean valid = redBlackTree.verifyRBT();
-//					if(!valid)
-//						System.out.println("Invalid RBT");
-//					else{
-//						System.out.println("Valid RBT");
-//					}
+					boolean valid = redBlackTree.verifyRBT();
+					if(!valid)
+						System.out.println("Invalid RBT");
+					else{
+						System.out.println("Valid RBT");
+					}
 					break;
+				}
+
+				case "Print":{
+					redBlackTree.print();
 				}
 			}
 		}
