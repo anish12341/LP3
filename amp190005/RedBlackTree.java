@@ -60,7 +60,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 */
 	public boolean add(T x) {
 		boolean add = super.add(x);
-		printParents();
 		// RedBlackTree.Entry<T> curr = new Entry(bstCurr.element, NIL, NIL);
 		if (add) {
 			BinarySearchTree.Entry<T> curr = getCurrent(x);
@@ -293,8 +292,181 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		}
 	}
 
-
 	public Entry<T> remove(T x) {
+		Entry<T> removed = (Entry<T>) super.remove(x);
+
+		if(removed == null){
+			return null;
+		}
+		// when actual deleted node after BST is leaf and its color is red
+		if (removed.isLeafNode() && removed.color == RED) {
+			return removed;
+		}
+
+		// when actual deleted node after BST is leaf and its color is black
+		else if (removed.isLeafNode() && removed.color == BLACK) {
+			deleteFixViolation();
+			return removed;
+		}
+
+		// non leaf node i.e. replaced by a child which is non leaf
+		else if(!removed.isLeafNode() && removed.color == BLACK){
+			if(direction.equals("right")) {
+				((Entry<T>)(parents.peek().right)).color = BLACK;
+
+			}
+			else if(direction.equals("left")) {
+				((Entry<T>)(parents.peek().left)).color = BLACK;
+			}
+			return removed;
+		}
+		return null;
+	}
+
+	/*
+	 * This method recursively fixes the violation of RBTree properties
+	 * after a node is deleted
+	*/
+
+	private void deleteFixViolation() {
+		Entry<T> sibling = null;
+		Entry<T> parent = (Entry<T>) parents.pop();
+
+		// find sibling
+		if (direction.equals("right"))
+			sibling = (Entry<T>) parent.left;
+		else if (direction.equals("left"))
+			sibling = (Entry<T>) parent.right;
+
+		// sibling exists & it's color is black
+		if (sibling != null && sibling.element!= null &&sibling.color == BLACK) {
+
+			// sibling's both child are null
+			if (sibling.left == NIL && sibling.right == NIL) {
+				sibling.color = RED;
+				if (parent.color == RED) {
+					parent.color = BLACK;
+					return;
+				}
+				if (parents.peek()!=null && parents.peek().left.element != null &&parents.peek().left.element.equals(parent.element)) {
+					direction = "left";
+					deleteFixViolation();
+				} else if (parents.peek()!=null && parents.peek().right.element!=null && parents.peek().right.element.equals(parent.element)) {
+					direction = "right";
+					deleteFixViolation();
+				}
+			}
+
+			// sibling's both child are RED
+			else if (sibling.right != null && sibling.right.element != null && ((Entry<T>) (sibling.right)).color == RED && sibling.left != null && sibling.left.element != null && ((Entry<T>) (sibling.left)).color == RED) {
+				if (direction.equals("right")) {
+					rotateRight(parent);
+					boolean temp = parent.color;
+					parent.color = sibling.color;
+					sibling.color = temp;
+					((Entry<T>) (sibling.left)).color = BLACK;
+					return;
+				} else if (direction.equals("left")) {
+					rotateLeft(parent);
+					boolean temp = parent.color;
+					parent.color = sibling.color;
+					sibling.color = temp;
+					((Entry<T>) (sibling.right)).color = BLACK;
+					return;
+				}
+			}
+
+			// sibling's right child is RED
+			else if (sibling.right != null && sibling.right.element != null &&((Entry<T>) (sibling.right)).color == RED) {
+				if (direction.equals("right")) { // left right case
+					parents.push(parent);
+					rotateLeft(sibling);
+					sibling = (Entry<T>) parent.left;
+					boolean temp = sibling.color;
+					sibling.color = ((Entry<T>) (sibling.left)).color;
+					((Entry<T>) (sibling.left)).color = temp;
+					if (parents.peek()!=null && parents.peek().left.element!= null && parents.peek().left.element.equals(parent.element)) {
+						direction = "left";
+						deleteFixViolation();
+					} else if (parents.peek()!=null && parents.peek().right.element != null && parents.peek().right.element.equals(parent.element)) {
+						direction = "right";
+						deleteFixViolation();
+					}
+				} else if (direction.equals("left")) { // right right case
+					rotateLeft(parent);
+					boolean temp = parent.color;
+					parent.color = sibling.color;
+					sibling.color = temp;
+					((Entry<T>) (sibling.right)).color = BLACK;
+					return;
+				}
+			}
+
+			// sibling's left child is RED
+			else if (sibling.left != null && sibling.left.element != null &&((Entry<T>) (sibling.left)).color == RED) {
+				if (direction.equals("right")) {
+					rotateRight(parent);
+					boolean temp = parent.color;
+					parent.color = sibling.color;
+					sibling.color = temp;
+					((Entry<T>) (sibling.left)).color = BLACK;
+					return;
+				} else if (direction.equals("left")) {
+					parents.push(parent);
+					rotateRight(sibling);
+					sibling = (Entry<T>) parent.right;
+					boolean temp = sibling.color;
+					sibling.color = ((Entry<T>) (sibling.right)).color;
+					((Entry<T>) (sibling.right)).color = temp;
+
+					if (parents.peek()!=null && parents.peek().left.element!= null && parents.peek().left.element.equals(parent.element)) {
+						direction = "left";
+						deleteFixViolation();
+					} else if (parents.peek()!=null && parents.peek().right.element!=null && parents.peek().right.element.equals(parent.element)) {
+						direction = "right";
+						deleteFixViolation();
+					}
+				}
+			}
+
+			// all remaining cases mostly when sibling and both its child are BLACK
+			else {
+				sibling.color = RED;
+				if (parent.color == RED) {
+					parent.color = BLACK;
+					return;
+				}
+				if (parents.peek()!=null && parents.peek().left.element!= null && parents.peek().left.element.equals(parent.element)) {
+					direction = "left";
+					deleteFixViolation();
+				} else if (parents.peek()!=null && parents.peek().right.element != null && parents.peek().right.element.equals(parent.element)) {
+					direction = "right";
+					deleteFixViolation();
+				}
+			}
+		}
+
+		// sibling is RED in color, color of child doesn't matter
+		else if (sibling != null && sibling.element != null && sibling.color == RED) {
+
+			if (direction.equals("right")) {
+				rotateRight(parent);
+			} else if (direction.equals("left")) {
+				rotateLeft(parent);
+			}
+
+			// swap parent color and sibling color
+			boolean temp = parent.color;
+			parent.color = sibling.color;
+			sibling.color = temp;
+			parents.push(sibling);
+			parents.push(parent);
+			deleteFixViolation();
+		}
+
+	}
+
+	/*public Entry<T> remove(T x) {
 		Entry<T> removed = (Entry<T>)super.remove(x);
 		Entry<T> cursor = null;
 		System.out.println("After removing:");
@@ -422,7 +594,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		if(cursor.color == RED){
 			cursor.color = BLACK;
 		}
-	}
+	}*/
 
 
 	/**
