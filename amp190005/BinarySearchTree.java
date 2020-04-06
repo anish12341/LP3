@@ -1,281 +1,229 @@
+
+
 package LP3.amp190005;
 
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
-/**
- * Implementation of Binary Search Tree.
- *
- * @author Courtney Erbes  cte150030
- * @author Henil Doshi     hxd180025
- * @version 1.0
- * @since 2020-02-23
- */
+import java.util.Iterator;
+
 public class BinarySearchTree<T extends Comparable<? super T>> implements Iterable<T> {
-    /**
-     * Class to represent an entry in a BST
-     */
     static class Entry<T> {
-        T element; // value of entry
-        Entry<T> left, right; // left and right children of entry
+        T element;
+        Entry<T> left, right;
 
-
-        public Entry(T x) {
-			this.element = x;
-        }
-
-        /**
-         * Constructor to create entry in BST
-         * @param x The value of the new entry
-         * @param left The left child of the new entry
-         * @param right The right child of the new entry
-         */
         public Entry(T x, Entry<T> left, Entry<T> right) {
             this.element = x;
-            this.left = left;
-            this.right = right;
+	        this.left = left;
+	        this.right = right;
         }
     }
+    
+    Entry<T> root;
+    int size;
+    Stack<Entry<T>> parents = new Stack<>();
 
-    Entry<T> root; // root of BST
-    int size; // size of BST
-    Stack<Entry<T>> parents = new Stack(); // path from parent to current node
-
-    /**
-     * Constructor for basic, empty BST
-     */
     public BinarySearchTree() {
-        root = null;
-        size = 0;
+	    root = null;
+	    size = 0;
     }
 
-    /**
-     * This method checks if element(x) is contained in tree or not
-     * @param x Element which is being searched
-     * @return boolean true if element is found, else false
-     */
+    private Entry<T> find(T x) {
+        parents = new Stack<>();
+        return this.find(this.root,x);
+    }
+
     public boolean contains(T x) {
-        Entry<T> ent = find(x);
-        if (ent == null || x.compareTo(ent.element) != 0) {
+        if(this.get(x) != null) {
+            return true;
+        }
+        else {
             return false;
         }
-        return true;
     }
 
-    /**
-     * This method finds the element(x) in the tree if it exists.
-     * This method is used by other methods in this class.
-     * @param x Element which is to be found
-     * @return Entry<T> node of tree if element found, else return entry where failed
-     */
-    private Entry<T> find(T x) {
-        parents = new Stack();
-        parents.push(null);
-        Entry<T> result = findHelper(x, root);
-        return result;
+    public T get(T x) {
+         Entry<T> temp = this.find(x);
+         if(temp == null || x.compareTo(temp.element) != 0) {
+             return null;
+         } else {
+             return temp.element;
+         }
     }
 
-    /**
-     * Helper method (used by find method) to find an element
-     * @param x Element which is being compared to
-     * @param ent Element which is being searched
-     * @return Entry<T> node of tree if element found, else return entry where failed
-     */
-    private Entry<T> findHelper(T x, Entry<T> ent) {
-        if (ent == null || x.compareTo(ent.element) == 0) {
-            return ent;
-        }
 
-        if (ent.right == null && ent.left == null) {
-            return ent;
-        }
+
+    private Entry<T> find(Entry<T> ent,T x) {
         while(true) {
-            if (x.compareTo(ent.element) == 0) {
-                break;
-            }
-            else if (x.compareTo(ent.element) < 0) {
-                if (ent.left == null || ent.left.element == null) { break; }
-                parents.push(ent);
-                ent = ent.left;
-            }else if (ent.right == null || ent.right.element == null) {
-                break;
-            } else {
-                parents.push(ent);
-                ent = ent.right;
-            }
+           if(ent == null || x.compareTo(ent.element) == 0) {
+               break;
+           }
+           else if(x.compareTo(ent.element) < 0) {
+               if(ent.left == null) {
+                   break;
+               } else {
+                   this.parents.push(ent);
+                   ent = ent.left;
+               }
+           } else {
+               if(ent.right == null) {
+                   break;
+               } else {
+                   this.parents.push(ent);
+                   ent = ent.right;
+               }
+           }
         }
-
+        this.parents.push(ent);
         return ent;
     }
 
-    /**
-     * This method checks if there is an element that is equal to x in the tree.
-     * Element in tree that is equal to x is returned, null otherwise.
-     * @param x Element which is being compared to
-     * @return T Element in tree that is equal to x is returned, null otherwise
-     */
-    public T get(T x) {
-        Entry<T> ent = find(x);
-        if (ent != null && x.compareTo(ent.element) == 0) {
-            return ent.element;
+    public boolean add(T x) {
+        Entry<T> elem = new Entry<>(x,null, null);
+        return add(elem);
+    }
+
+    public boolean add(Entry<T> ent) {
+
+        if(this.size == 0) {
+
+            this.root = ent;
+            size++;
+            this.parents = new Stack<>();
+            this.parents.push(ent);
+            return true;
         }
+        else {
+
+            Entry<T> temp = this.find(ent.element);
+            if(ent.element.compareTo(temp.element) == 0) {
+                return false;
+            } else if(ent.element.compareTo(temp.element) < 0) {
+                temp.left = ent;
+                size++;
+            } else {
+                temp.right = ent;
+                size++;
+            }
+        }
+        this.parents.push(ent);
+        return true;
+
+    }
+
+    public T remove(T x) {
+
+        if(this.size == 0) {
+            return null;
+        }
+        Entry<T> temp = find(x);
+        if(temp.element.compareTo(x) != 0) {
+            return null;
+        }
+        if(temp.left == null || temp.right == null) {
+            this.splice(temp);
+            this.size--;
+        }
+        else {
+            Entry<T> minRight = this.find(temp.right,x);
+            temp.element = minRight.element;
+            this.splice(minRight);
+            this.size--;
+        }
+
+        return x;
+    }
+
+    private void splice(Entry<T> t) {
+
+        Entry<T> splicedChild = t.left== null ? t.right:t.left;
+
+        if(t == this.root) {
+            this.root = splicedChild;
+        }
+        else {
+
+            Entry<T> temp = this.parents.pop();
+            Entry<T> parent = this.parents.peek();
+            this.parents.push(temp);
+            if (parent.left == t) {
+                parent.left = splicedChild;
+            } else {
+                parent.right = splicedChild;
+            }
+        }
+        this.parents.push(splicedChild);
+    }
+
+    public T min() {
+	    return null;
+    }
+
+    public T max() {
         return null;
     }
 
-    /**
-     * This method adds element(x) to the tree.
-     * If tree contains a node with same key, don't add the duplicate element.
-     * Returns true if x is a new element added to tree, else false
-     * @param x Element which we want to add in the tree
-     * @return boolean returns true if element is added to tree, else returns false
-     */
-    public boolean add(T x) {
-        if (size == 0) {
-            root = new Entry<>(x, null, null);
-            size++;
-            return true;
-        }
-        Entry<T> ent = find(x);
-
-        if (x.compareTo(ent.element) == 0) {
-            return false; }
-        parents.push(ent);
-
-        if (x.compareTo(ent.element) < 0) {
-            ent.left = new Entry(x, null, null);
-        } else {
-            ent.right = new Entry(x, null, null);
-        }
-        size++;
-        return true;
-    }
-
-
-    /**
-     * This method removes the element(x) from the tree.
-     * Returns x if found, otherwise returns null
-     * @param x Element which is going to be removed
-     * @return T element if found, else return null
-     */
-    public T remove(T x) {
-        if (size == 0) { return null; }
-        Entry<T> ent = find(x);
-        if (x.compareTo(ent.element) != 0) { return null; }
-        if (ent.left == null || ent.right == null) {
-            splice(ent);
-            size--;
-            return x;
-        } else {
-            parents.push(ent);
-            Entry<T> minRight = findHelper(x, ent.right);
-            ent.element = minRight.element;
-            splice(minRight);
-            size--;
-            return x;
-        }
-    }
-
-    /**
-     * Helper method used by remove(T x) method
-     * Precondition: ent has at most one child and stack has path from root to parent of ent
-     * @param ent
-     * @return nothing
-     */
-    private void splice(Entry<T> ent) {
-        Entry<T> parent = parents.peek();
-        Entry<T> child = ent.left == null ? ent.right : ent.left;
-        if (parent == null) {
-            root = child;
-        } else if (parent.left == ent) {
-            parent.left = child;
-        } else {
-            parent.right = child;
-        }
-    }
-
-    /**
-     * This method returns minimum element of tree.
-     * It returns element if found, otherwise returns null (tree is empty).
-     * @return T minimum element
-     */
-    public T min() {
-        if (root == null) { return null; }
-
-        Entry<T> current = root;
-
-        while (current.left != null) {
-            current = current.left;
-        }
-
-        return current.element;
-    }
-
-    /**
-     * This method returns maximum element of tree.
-     * It returns element if found, otherwise returns null (tree is empty).
-     * @return T maximum element
-     */
-    public T max() {
-        if (root == null) { return null; }
-
-        Entry<T> current = root;
-
-        while (current.right != null) {
-            current = current.right;
-        }
-
-        return current.element;
-    }
-
-    /**
-     * This method creates an array with the elements using in-order traversal of tree
-     * @return Comparable[] array with elements of tree
-     */
     public Comparable[] toArray() {
-        if (root == null) {
-            return new Comparable[0];
-        }
-
-        Comparable[] arr = new Comparable[size];
-        Stack<Entry<T>> s = new Stack();
-        Entry<T> current = root;
-        int i = 0;
-
-        // traverse the tree
-        while (current != null || s.size() > 0)
-        {
-            while (current !=  null)
-            {
-                s.push(current);
-                current = current.left;
+        Comparable[] data = new Comparable[size];
+        Entry<T> temp = this.root;
+        Stack<Entry<T>> stack = new Stack<>();
+        int idx = 0;
+        stack.push(temp);
+        leftTraversal(stack,temp);
+        while (!stack.isEmpty()) {
+            data[idx++] = stack.peek().element;
+            temp = stack.pop();
+            if(temp.right != null) {
+                temp = temp.right;
+                stack.push(temp);
+                leftTraversal(stack,temp);
             }
-            current = s.pop();
-            arr[i++] = current.element;
-            current = current.right;
         }
-        return arr;
+	return data;
+    }
+
+    public void leftTraversal(Stack<Entry<T>> stack,Entry<T> ent) {
+        while (ent.left != null) {
+            stack.push(ent.left);
+            ent = ent.left;
+        }
     }
 
     /** Optional problem 2: Iterate elements in sorted order of keys
 	Solve this problem without creating an array using in-order traversal (toArray()).
      */
     public Iterator<T> iterator() {
+	return null;
+    }
+
+    // Optional problem 2.  Find largest key that is no bigger than x.  Return null if there is no such key.
+    public T floor(T x) {
         return null;
     }
 
-    /**
-     * This the main method through which you can add, remove and print the elements of tree
-     * @param args not used
-     * @return nothing
-     */
+    // Optional problem 2.  Find smallest key that is no smaller than x.  Return null if there is no such key.
+    public T ceiling(T x) {
+        return null;
+    }
+
+    // Optional problem 2.  Find predecessor of x.  If x is not in the tree, return floor(x).  Return null if there is no such key.
+    public T predecessor(T x) {
+        return null;
+    }
+
+    // Optional problem 2.  Find successor of x.  If x is not in the tree, return ceiling(x).  Return null if there is no such key.
+    public T successor(T x) {
+        return null;
+    }
+
+// End of Optional problem 2
+
     public static void main(String[] args) {
-        BinarySearchTree<Integer> t = new BinarySearchTree<>();
+	BinarySearchTree<Integer> t = new BinarySearchTree<>();
         Scanner in = new Scanner(System.in);
         while(in.hasNext()) {
             int x = in.nextInt();
             if(x > 0) {
                 System.out.print("Add " + x + " : ");
-                System.out.println();
                 t.add(x);
                 t.printTree();
             } else if(x < 0) {
@@ -290,42 +238,26 @@ public class BinarySearchTree<T extends Comparable<? super T>> implements Iterab
                 }
                 System.out.println();
                 return;
-            }
+            }           
         }
+
+
     }
 
-    public void printParents() {
-        System.out.print("Parent's length: " + parents.size() + " ");
-        for (int i = 1; i < parents.size(); i++) {
-            System.out.print(parents.get(i).element + " -");
-        }
-        // if (parents.peek() != null)
-        //     System.out.println("Top: " + parents.peek().element);
-        System.out.println();
-    }
-    /**
-     * This method prints tree size and then inorder traversal of tree
-     * @return nothing
-     */
     public void printTree() {
-        System.out.print("[" + size + "]");
-        printTree(root);
-        System.out.println();
+	System.out.print("[" + size + "]");
+	printTree(root);
+	System.out.println();
     }
 
-    /**
-     * This is the helper method used by printTree() method for
-     * inorder traversal of tree
-     * @param node root of the tree
-     * @return nothing
-     */
     void printTree(Entry<T> node) {
-        if(node != null) {
-            printTree(node.left);
-            System.out.print(" " + node.element);
-            printTree(node.right);
-        }
+	if(node != null) {
+	    printTree(node.left);
+	    System.out.print(" " + node.element);
+	    printTree(node.right);
+	}
     }
+
 }
 /*
 Sample input:
@@ -345,6 +277,6 @@ Add 10 : [10] 1 2 3 4 5 6 7 8 9 10
 Remove -3 : [9] 1 2 4 5 6 7 8 9 10
 Remove -6 : [8] 1 2 4 5 7 8 9 10
 Remove -3 : [8] 1 2 4 5 7 8 9 10
-Final: 1 2 4 5 7 8 9 10
+Final: 1 2 4 5 7 8 9 10 
 
 */

@@ -27,10 +27,13 @@ public class Timer {
 
     public long memory()   { if(!ready) { end(); }  return memUsed; }
 
-public void scale(int num) { elapsedTime /= num; }
-
     public String toString() {
         if(!ready) { end(); }
         return "Time: " + elapsedTime + " msec.\n" + "Memory: " + (memUsed/1048576) + " MB / " + (memAvailable/1048576) + " MB.";
     }
+
 }
+
+
+
+
