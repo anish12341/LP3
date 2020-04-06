@@ -1,15 +1,21 @@
+/**
+ * Euler (LP2)
+ * This program implements Red-Black tree and its different
+ * operations like add(), insertFix(), isLeftChild(),
+ * @author Anish Patel      amp190005
+ * @author Henil Doshi     hxd180025
+ * @author Ishan Shah     ixs180019
+ * @author Neel Gotecha     nxg180023
+ * @version 1.0
+ * @since 2020-03-08
+ */
+
 package LP3.amp190005;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- *
- * @author vedant, vishal
- *
- * @param <T> Generic Type - can refer any Object
- */
 public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchTree<T> {
 	private static final boolean RED = true;
 	private static final boolean BLACK = false;
@@ -17,16 +23,14 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	static class Entry<T> extends BinarySearchTree.Entry<T> {
 		boolean color;
 
-		// default color always inserted as RED
+		/**
+		 * Default constructor for entry
+		 * */
 		Entry(T x, Entry<T> left, Entry<T> right) {
 			super(x, left, right);
 			color = RED;
 		}
 
-		Entry(T x) {
-			super(x);
-			color = BLACK;
-		}
 
 		boolean isRed() {
 			return color == RED;
@@ -47,6 +51,9 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	}
 
 	Entry<T> NIL;
+	/**
+	 * Default constructor for Red Black Tree
+	 * */
 	RedBlackTree() {
 		NIL = new Entry<>(null,null,null);
 		NIL.color = BLACK;
@@ -75,6 +82,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return add;
 	}
 
+	/**
+	 * To fix the structure of tree after addition
+	 * @return
+	 * @param curr, current entry that is added to the tree
+	 */
 	private void insertFix(Entry<T> curr) {
 		Entry<T> parent = getParent(curr);
 		while (curr != root && parent != null && parent.color != BLACK && curr.color != BLACK) {
@@ -144,7 +156,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	/**
 	 * To determine whether the current element is a left child of it's parent
 	 * @param curr
-	 * @return
+	 * @return true if yes else false
 	 */
 	public boolean isLeftChild(Entry<T> curr, Entry<T> fromParent) {
 		if (fromParent == null) {
@@ -164,7 +176,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	/**
 	 * To determine whether the current element is a right child of it's parent
 	 * @param curr
-	 * @return
+	 * @return true if yes else false
 	 */
 	public boolean isRightChild(Entry<T> curr, Entry<T> fromParent) {
 		if (fromParent == null) {
@@ -184,6 +196,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	/**
 	 * Method to get parent of curr
 	 * @param curr Current node
+	 * @return parent of current
 	 */
 	public Entry<T> getParent(Entry<T> curr) {
 		return ((Entry<T>)parents.pop());
@@ -192,6 +205,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	/**
 	 * Method to get parent of curr
 	 * @param curr Current node
+	 * @return object of Entry<T>
 	 */
 	public Entry<T> getUncle(Entry<T> curr, Entry<T> parent) {
 		Entry<T> grandParent = (Entry<T>) parents.peek();
@@ -209,6 +223,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	/**
 	 * Method to get recently added element
 	 * @param x Recently added element
+	 * @return object of RedBlackTree.Entry<T>
 	 */
 	public RedBlackTree.Entry<T> getCurrent(T x) {
 		if (parents.size() > 0) {
@@ -222,7 +237,6 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 				}
 			}
 		}
-		// return (RedBlackTree.Entry<T>)root;
 		RedBlackTree.Entry<T> newRoot = new Entry<T>(x, NIL, NIL);
 		newRoot.setColor(BLACK);
 		return newRoot;
@@ -257,6 +271,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 * 		  \    		  /
 	 * 		   x		 p
 	 * @param parentNode - p as in above fig
+	 * @return
 	 */
 	private void rotateLeft(Entry<T> parentNode) {
 		Entry<T> temp = (Entry<T>) parentNode.right; // temp = p address
@@ -278,6 +293,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 	 * 	  /					  \
 	 *   x					   p
 	 * @param parentNode - p as in above fig
+	 * @return
 	 */
 	private void rotateRight(Entry<T> parentNode) {
 		Entry<T> temp = (Entry<T>) parentNode.left; // = node // temp = p address
@@ -292,6 +308,12 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		}
 	}
 
+	/**
+	 * Remove node of value x from the tree. If tree contains a node with same key, return x
+	 * Node is removed using super function
+	 * @param x, value of node to be deleted
+	 * @return object of type Entry<T>
+	 */
 	public Entry<T> remove(T x) {
 		Entry<T> removed = (Entry<T>) super.remove(x);
 
@@ -323,11 +345,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return null;
 	}
 
-	/*
-	 * This method recursively fixes the violation of RBTree properties
-	 * after a node is deleted
-	*/
-
+	/**
+	 * This method recursively fixes the violation of RBTree properties after a node is deleted
+	 * @param
+	 * @return
+	 * */
 	private void deleteFixViolation() {
 		Entry<T> sibling = null;
 		Entry<T> parent = (Entry<T>) parents.pop();
@@ -348,7 +370,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 					parent.color = BLACK;
 					return;
 				}
-				if (parents.peek()!=null && parents.peek().left.element != null &&parents.peek().left.element.equals(parent.element)) {
+				if (parents.peek()!=null && parents.peek().left.element != null && parents.peek().left.element.equals(parent.element)) {
 					direction = "left";
 					deleteFixViolation();
 				} else if (parents.peek()!=null && parents.peek().right.element!=null && parents.peek().right.element.equals(parent.element)) {
@@ -358,7 +380,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			}
 
 			// sibling's both child are RED
-			else if (sibling.right != null && sibling.right.element != null && ((Entry<T>) (sibling.right)).color == RED && sibling.left != null && sibling.left.element != null && ((Entry<T>) (sibling.left)).color == RED) {
+			else if (sibling.right != NIL  && sibling.left != NIL &&  ((Entry<T>) (sibling.right)).color == RED  && ((Entry<T>) (sibling.left)).color == RED) {
 				if (direction.equals("right")) {
 					rotateRight(parent);
 					boolean temp = parent.color;
@@ -377,7 +399,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			}
 
 			// sibling's right child is RED
-			else if (sibling.right != null && sibling.right.element != null &&((Entry<T>) (sibling.right)).color == RED) {
+			else if (sibling.right != NIL &&((Entry<T>) (sibling.right)).color == RED) {
 				if (direction.equals("right")) { // left right case
 					parents.push(parent);
 					rotateLeft(sibling);
@@ -403,7 +425,7 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			}
 
 			// sibling's left child is RED
-			else if (sibling.left != null && sibling.left.element != null &&((Entry<T>) (sibling.left)).color == RED) {
+			else if (sibling.left != NIL  &&((Entry<T>) (sibling.left)).color == RED) {
 				if (direction.equals("right")) {
 					rotateRight(parent);
 					boolean temp = parent.color;
@@ -599,6 +621,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 	/**
 	 * overrides BST printTree method
+	 * @param
+	 * @return
 	 */
 	public void printTree() {
 		System.out.print("[" + size + "]");
@@ -606,7 +630,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		System.out.println();
 	}
 
-	// In order traversal of RBTree
+	/**
+	 * Inorder traversal of the tree
+	 * @param node, current node in the traversal
+	 * @return
+	 */
 	public void printTree(Entry<T> node) {
 		if (node != null) {
 			// System.out.print("Type: " + node.getClass() + " ");
@@ -620,6 +648,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		}
 	}
 
+	/**
+	 * Checks if the root is black
+	 * @param
+	 * @return object of type Boolean
+	 */
 	public boolean isRootBlack(){
 		if(root == NIL)
 			return true;
@@ -629,6 +662,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			return true;
 	}
 
+	/**
+	 * Checks Red Black Tree and Binary Search Tree property of the Tree
+	 * @param node, current node in traversal
+	 * @return object of type Boolean
+	 */
 	public boolean validateNodes(Entry<T> node){
 
 		Entry<T> leftNode= (Entry<T>) node.left;
@@ -644,8 +682,8 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		}
 
 		if (node.color == RED) {
-			// You should not have two red nodes in a row
 
+			// You should not have two red nodes in a row
 			if (leftNode.color == RED) {
 				System.out.println("Adjacent red left nodes: "+ node.element + " and " + leftNode.element);
 				return false;
@@ -673,14 +711,15 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		}
 
 		if (rightNode.element != null  && !rightNode.isLeafNode()) {
+
 			// Check BST property
 			boolean rightCheck = rightNode.element.compareTo(node.element) > 0;
 			if (!rightCheck){
 				System.out.println("Does not satisfy BST property for RIGHT NODE " + rightNode.element);
 				return false;
 			}
-			// Check red-black property
 
+			// Check red-black property
 			rightCheck = this.validateNodes(rightNode);
 			if (!rightCheck) {
 				System.out.println("Does not satisfy RBT property for RIGHT NODE " + rightNode.element);
@@ -690,36 +729,35 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return true;
 	}
 
+	/**
+	 *  A wrapper class used to modify height across recursive calls.
+	 * */
 	class Height {
 		int height = 0;
 	}
 
+	/**
+	 * Checks the height of RBT tree
+	 * @param root, initial height
+	 * @return object of type Boolean
+	 */
 	boolean isBalanced(Entry<T> root, Height height)
 	{
-		/* If tree is empty then return true */
 		if (root.element == null) {
 			height.height = 0;
 			return true;
 		}
 
-		/* Get heights of left and right sub trees */
 		Height lheight = new Height(), rheight = new Height();
 		boolean l = isBalanced((Entry<T>) root.left, lheight);
 		boolean r = isBalanced((Entry<T>) root.right, rheight);
 		int lh = lheight.height, rh = rheight.height;
 
-        /* Height of current node is max of heights of
-           left and right subtrees plus 1*/
 		height.height = (lh > rh ? lh : rh) + 1;
 
-        /* If difference between heights of left and right
-           subtrees is more than 2 then this node is not balanced
-           so return 0 */
-		if ((lh - rh >= 3) || (rh - lh >= 3))
+		if ((lh - rh >= 4) || (rh - lh >= 4))
 			return false;
 
-        /* If this node is balanced and left and right subtrees
-           are balanced then return true */
 		else
 			return l && r;
 	}
@@ -745,6 +783,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 		return computeHeight(root) != -1;
 	}*/
 
+	/**
+	 * Checks all the properties of Red Black Tree
+	 * @param
+	 * @return object of type Boolean
+	 */
 	public boolean verifyRBT(){
 		if(!isRootBlack()) {
 			System.out.println("Root is not black");
@@ -762,6 +805,95 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 			System.out.println("Valid RBT");
 			return true;
 		}
+	}
+
+
+
+
+	/**
+	 * Sample Input 10 85 15 70 20 60 30 50 65 80 90 40 5 55 -60 -15 -85 -70 -90 -20
+	 *
+	 10
+	 Add 10 : [1] 10B
+	 85
+	 Add 85 : [2] 10B 85R
+	 15
+	 Add 15 : [3] 10R 15B 85R
+	 70
+	 Add 70 : [4] 10B 15B 70R 85B
+	 20
+	 Add 20 : [5] 10B 15B 20R 70B 85R
+	 60
+	 Add 60 : [6] 10B 15B 20B 60R 70R 85B
+	 30
+	 Add 30 : [7] 10B 15B 20R 30B 60R 70R 85B
+	 50
+	 Add 50 : [8] 10B 15R 20B 30B 50R 60B 70R 85B
+	 65
+	 Add 65 : [9] 10B 15R 20B 30B 50R 60B 65R 70R 85B
+	 80
+	 Add 80 : [10] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B
+	 90
+	 Add 90 : [11] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B 90R
+	 40
+	 Add 40 : [12] 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
+	 5
+	 Add 5 : [13] 5R 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
+	 55
+	 Add 55 : [14] 5R 10B 15B 20B 30B 40R 50B 55R 60R 65B 70B 80R 85B 90R
+	 -60
+	 Remove -60 : [13] 5R 10B 15B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
+	 -15
+	 Remove -15 : [12] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
+	 -85
+	 Remove -85 : [11] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 90B
+	 -70
+	 Remove -70 : [10] 5B 10B 20B 30B 40B 50R 55R 65B 80B 90B
+	 -90
+	 Remove -90 : [9] 5B 10B 20B 30B 40B 50B 55B 65R 80B
+	 -20
+	 Remove -20 : [8] 5R 10B 30B 40B 50B 55B 65B 80B
+	 * @param args
+	 */
+	public static void main(String[] args) {
+
+		RedBlackTree<Integer> t = new RedBlackTree<>();
+		Scanner in = new Scanner(System.in);
+		while (in.hasNext()) {
+			int x = in.nextInt();
+			if (x > 0) {
+				System.out.println("Add " + x + " : ");
+				t.add(x);
+				System.out.print("Root " + t.root.element + " : ");
+				t.printTree();
+				t.print();
+				t.verifyRBT();
+			} else if (x < 0) {
+				System.out.print("Remove " + -x + " : ");
+				t.remove(-x);
+				System.out.println("Direction: "+t.direction);
+				t.printTree();
+				t.print();
+				t.verifyRBT();
+			} else {
+				Comparable[] arr = t.toArray();
+				System.out.print("Final: ");
+				for (int i = 0; i < t.size; i++) {
+					System.out.print(arr[i] + " ");
+				}
+				System.out.println();
+				return;
+			}
+		}
+
+	}
+
+	public void printParents() {
+		System.out.print("Parent's length: " + parents.size() + " ");
+		for (int i = 1; i < parents.size(); i++) {
+			System.out.print(parents.get(i).element + " -");
+		}
+		System.out.println();
 	}
 
 	public void print()
@@ -875,93 +1007,5 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BinarySearchT
 
 			perpiece /= 2;
 		}
-	}
-
-	/**
-	 * Sample Input 10 85 15 70 20 60 30 50 65 80 90 40 5 55 -60 -15 -85 -70 -90 -20
-	 *
-	 10
-	 Add 10 : [1] 10B
-	 85
-	 Add 85 : [2] 10B 85R
-	 15
-	 Add 15 : [3] 10R 15B 85R
-	 70
-	 Add 70 : [4] 10B 15B 70R 85B
-	 20
-	 Add 20 : [5] 10B 15B 20R 70B 85R
-	 60
-	 Add 60 : [6] 10B 15B 20B 60R 70R 85B
-	 30
-	 Add 30 : [7] 10B 15B 20R 30B 60R 70R 85B
-	 50
-	 Add 50 : [8] 10B 15R 20B 30B 50R 60B 70R 85B
-	 65
-	 Add 65 : [9] 10B 15R 20B 30B 50R 60B 65R 70R 85B
-	 80
-	 Add 80 : [10] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B
-	 90
-	 Add 90 : [11] 10B 15R 20B 30B 50R 60B 65R 70R 80R 85B 90R
-	 40
-	 Add 40 : [12] 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
-	 5
-	 Add 5 : [13] 5R 10B 15B 20B 30B 40R 50B 60R 65B 70B 80R 85B 90R
-	 55
-	 Add 55 : [14] 5R 10B 15B 20B 30B 40R 50B 55R 60R 65B 70B 80R 85B 90R
-	 -60
-	 Remove -60 : [13] 5R 10B 15B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
-	 -15
-	 Remove -15 : [12] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 85B 90R
-	 -85
-	 Remove -85 : [11] 5B 10B 20B 30B 40B 50R 55R 65B 70B 80R 90B
-	 -70
-	 Remove -70 : [10] 5B 10B 20B 30B 40B 50R 55R 65B 80B 90B
-	 -90
-	 Remove -90 : [9] 5B 10B 20B 30B 40B 50B 55B 65R 80B
-	 -20
-	 Remove -20 : [8] 5R 10B 30B 40B 50B 55B 65B 80B
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		RedBlackTree<Integer> t = new RedBlackTree<>();
-		Scanner in = new Scanner(System.in);
-		while (in.hasNext()) {
-			int x = in.nextInt();
-			if (x > 0) {
-				System.out.println("Add " + x + " : ");
-				t.add(x);
-				System.out.print("Root " + t.root.element + " : ");
-				t.printTree();
-				t.print();
-				t.verifyRBT();
-			} else if (x < 0) {
-				System.out.print("Remove " + -x + " : ");
-				t.remove(-x);
-				System.out.println("Direction: "+t.direction);
-				t.printTree();
-				t.print();
-				t.verifyRBT();
-			} else {
-				Comparable[] arr = t.toArray();
-				System.out.print("Final: ");
-				for (int i = 0; i < t.size; i++) {
-					System.out.print(arr[i] + " ");
-				}
-				System.out.println();
-				return;
-			}
-		}
-
-	}
-
-	public void printParents() {
-		System.out.print("Parent's length: " + parents.size() + " ");
-		for (int i = 1; i < parents.size(); i++) {
-			System.out.print(parents.get(i).element + " -");
-		}
-		// if (parents.peek() != null)
-		//     System.out.println("Top: " + parents.peek().element);
-		System.out.println();
 	}
 }
